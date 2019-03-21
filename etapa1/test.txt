@@ -1,0 +1,35 @@
+,
+;
+:
+(
+)
+[
+]
+{
+}
++
+-
+*
+/
+<
+>
+=
+!
+&
+#
+$
+
+int a = ABC
+float _b = OAC.ABC
+byte 90 = OFE
+if ( a <= _b and _b >= 90 or a == not OFE.ABC and _b != OCB ) then {
+  leap;
+  loop;
+} else {
+  read;
+  print '+';
+  print `a`;
+  print "Foi"; return;
+}
+
+?
