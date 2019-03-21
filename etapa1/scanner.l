@@ -50,10 +50,15 @@ int isRunning();
 
 [a-z_0-9]* { return TK_IDENTIFIER; }
 
-<<EOF>> { running = 0; }
 . {return TOKEN_ERROR; }
 
 %%
 
 int getLineNumber() { return lineCount; }
 int isRunning() { return running; }
+int initMe() { printf("Aqui se inicializa a hash"); return 0;}
+
+int yywrap() {
+  running = 0;
+  return 1;
+}
