@@ -1,56 +1,80 @@
+//Includes
 #include <stdio.h>
-#include <stdlib.h>
+#include "tokens.h"
 
-//lex.yy.h
-int yylex();
+//Defines
+#define print_nome(TOKEN) \
+  printf("%d " #TOKEN " [%s]\n", getLineNumber(), yytext);
+#define print_nome2(TOKEN) \
+  printf("%d TK_ESPECIAL [%c]\n", getLineNumber(), TOKEN);
+//
+// #define print_nome(TOKEN) \
+//   printf(#TOKEN);
+// #define print_nome2(TOKEN) \
+//   printf("%c", TOKEN);
+
+//Externs
 extern char *yytext;
 extern FILE *yyin;
 
+extern int yylex();
+extern int getLineNumber();
+extern int isRunning();
 
-int isRunning(void);
-void initMe(void);
-
-int main(int argc, char** argv)
-  {
-  FILE *gold = 0;
+//Main
+int main (int argc, char **argv)
+{
   int token = 0;
-  int answar = 0;
-  int nota = 0;
-  int i=1;
-      fprintf(stderr,"Rodando main do prof. \n");
-
-  if (argc < 3)
-    {
-    printf("call: ./etapa1 input.txt output.txt \n");
-    exit(1);
-    }
-  if (0==(yyin = fopen(argv[1],"r")))
-    {
-    printf("Cannot open file %s... \n",argv[1]);
-    exit(1);
-    }
-  if (0==(gold = fopen(argv[2],"r")))
-    {
-    printf("Cannot open file %s... \n",argv[2]);
-    exit(1);
-    }
-  //initMe();
-  while (isRunning())
-    {
+  while ((isRunning())) {
     token = yylex();
-
-    if (!isRunning())
-      break;
-    fscanf(gold,"%d",&answar);
-    if (token == answar)
-      {
-      fprintf(stderr,"%d=ok(%s)  ",i,yytext  );
-      ++nota;
-      }
-    else
-      fprintf(stderr,"\n%d=ERROR(%s,%d,%d) ",i,yytext,token,answar );
-    ++i;
+    switch (token){
+    case ',':
+    case ';':
+    case ':':
+    case '(':
+    case ')':
+    case '[':
+    case ']':
+    case '{':
+    case '}':
+    case '+':
+    case '-':
+    case '*':
+    case '/':
+    case '<':
+    case '>':
+    case '=':
+    case '!':
+    case '&':
+    case '#':
+    case '$': print_nome2 (token); break;
+    case KW_BYTE: print_nome(KW_BYTE); break;
+    case KW_INT: print_nome(KW_INT); break;
+    case KW_FLOAT: print_nome(KW_FLOAT); break;
+    case KW_IF: print_nome(KW_IF); break;
+    case KW_THEN: print_nome(KW_THEN); break;
+    case KW_ELSE: print_nome(KW_ELSE); break;
+    case KW_LOOP: print_nome(KW_LOOP); break;
+    case KW_LEAP: print_nome(KW_LEAP); break;
+    case KW_READ: print_nome(KW_READ); break;
+    case KW_RETURN: print_nome(KW_RETURN); break;
+    case KW_PRINT: print_nome(KW_PRINT); break;
+    case OPERATOR_LE: print_nome(OPERATOR_LE); break;
+    case OPERATOR_GE: print_nome(OPERATOR_GE); break;
+    case OPERATOR_EQ: print_nome(OPERATOR_EQ); break;
+    case OPERATOR_DIF: print_nome(OPERATOR_DIF); break;
+    case OPERATOR_OR: print_nome(OPERATOR_OR); break;
+    case OPERATOR_AND: print_nome(OPERATOR_AND); break;
+    case OPERATOR_NOT: print_nome(OPERATOR_NOT); break;
+    case LIT_INTEGER: print_nome(LIT_INTEGER); break;
+    case LIT_FLOAT: print_nome(LIT_FLOAT); break;
+    case LIT_CHAR: print_nome(LIT_CHAR); break;
+    case LIT_STRING: print_nome(LIT_STRING); break;
+    case TK_IDENTIFIER: print_nome(TK_IDENTIFIER); break;
+    case TOKEN_ERROR:  print_nome(TOKEN_ERROR); break;
+    case 0: return 0;
+    default: printf ("<Não deve chegar aqui: code %d>\n", token); return 1;
     }
-  printf("NOTA %d\n\n",nota);
-  fprintf(stderr,"NOTA %d\n\n",nota);
   }
+  return 0;
+}
