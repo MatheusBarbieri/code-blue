@@ -1,9 +1,10 @@
 #include <stdlib.h>
+#include <string.h>
 #include "hash.h"
 
 extern char *yytext;
 
-int hashAddress(char *text) {
+int hashAddress(char* text) {
   int address = 1;
   int i;
   for (i = 0; i < HASH_SIZE; i++) {
@@ -12,7 +13,7 @@ int hashAddress(char *text) {
   return address - 1;
 }
 
-struct hashNode* hashInsert(int type, char *text) {
+struct hashNode* hashInsert(int type, char* text) {
   struct hashNode *newnode;
   newnode = (struct hashNode *)calloc(1, sizeof(struct hashNode));
   newnode->type = type;
@@ -28,7 +29,7 @@ struct hashNode* hashFind(char* text) {
   struct hashNode *node;
   int address = hashAddress(text);
   for (node = Table[address]; node; node = node->next) {
-    if (strcpy(text, node->next) == 0)
+    if (strcmp(text, node->text) == 0)
       return node;
   }
   return 0;
