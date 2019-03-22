@@ -1,7 +1,7 @@
 //Includes
 #include <stdio.h>
 #include "tokens.h"
-
+#include "hash.c"
 //Defines
 #define print_nome(TOKEN) \
   printf("%d " #TOKEN " [%s]\n", getLineNumber(), yytext);
