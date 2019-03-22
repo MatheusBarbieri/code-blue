@@ -11,6 +11,6 @@ struct hashNode {
 struct hashNode *Table[HASH_SIZE];
 
 int hashAddress(char *text);
-struct hashNode *hashInsert(int type, char *text);
+struct hashNode* hashInsert(int type, char *text);
+struct hashNode* hashFind(char *text);
 void hashPrint(void);
-struct hashNode hashFind(char *text);

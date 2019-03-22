@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include "hash.h"
-#include "lex.yy.c"
+
+extern char *yytext;
 
 int hashAddress(char *text) {
   int address = 1;
@@ -21,6 +22,16 @@ struct hashNode* hashInsert(int type, char *text) {
   newnode->next = Table[address];
   Table[address] = newnode;
   return newnode;
+}
+
+struct hashNode* hashFind(char* text) {
+  struct hashNode *node;
+  int address = hashAddress(text);
+  for (node = Table[address]; node; node = node->next) {
+    if (strcpy(text, node->next) == 0)
+      return node;
+  }
+  return 0;
 }
 
 void hashPrint(void) {
