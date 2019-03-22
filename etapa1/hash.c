@@ -24,9 +24,11 @@ struct hashNode* hashInsert(int type, char *text) {
 }
 
 void hashPrint(void) {
-  //int i;*
-//  NODE *node;
-
+  int i;
+  struct hashNode *node;
+  for (i = 0; i < HASH_SIZE; i++) {
+    for (node = Table[i]; node; node = node->next) {
+      fprintf(stderr, "Table[%d] has %s\n", i, node->text);
+    }
+  }
 }
-
-//NODE hashFind(char *text)
