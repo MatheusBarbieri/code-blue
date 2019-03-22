@@ -7,13 +7,13 @@ extern char *yytext;
 int hashAddress(char* text) {
   int address = 1;
   int i;
-  for (i = 0; i < HASH_SIZE; i++) {
+  for (i = 0; i < strlen(text); i++) {
     address = (address*text[i]) % HASH_SIZE + 1;
   }
   return address - 1;
 }
 
-struct hashNode* hashInsert(int type, char* text) {
+void hashInsert(int type, char* text) {
   struct hashNode *newnode;
   newnode = (struct hashNode *)calloc(1, sizeof(struct hashNode));
   newnode->type = type;
@@ -22,7 +22,8 @@ struct hashNode* hashInsert(int type, char* text) {
   int address = hashAddress(text);
   newnode->next = Table[address];
   Table[address] = newnode;
-  return newnode;
+  printf("texto: %s do tipo %d foi inserido na posição %d da tabela com sucesso\n", text, type, address);
+  hashPrint();
 }
 
 struct hashNode* hashFind(char* text) {

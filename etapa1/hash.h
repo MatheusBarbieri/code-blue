@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#define HASH_SIZE 30
+#define HASH_SIZE 997
 
 struct hashNode {
   int type;
@@ -11,6 +11,6 @@ struct hashNode {
 struct hashNode *Table[HASH_SIZE];
 
 int hashAddress(char *text);
-struct hashNode* hashInsert(int type, char *text);
+void hashInsert(int type, char *text);
 struct hashNode* hashFind(char *text);
 void hashPrint(void);
