@@ -2,7 +2,7 @@
 #include <string.h>
 #include "hash.h"
 
-extern char *yytext;
+//extern char *yytext;
 
 int hashAddress(char* text) {
   int address = 1;
@@ -13,17 +13,18 @@ int hashAddress(char* text) {
   return address - 1;
 }
 
-void hashInsert(int type, char* text) {
+struct hashNode* hashInsert(int type, char* text) {
   struct hashNode *newnode;
   newnode = (struct hashNode *)calloc(1, sizeof(struct hashNode));
   newnode->type = type;
-  newnode->text = calloc (strlen(yytext)+1, sizeof(char));
+  newnode->text = calloc (strlen(text)+1, sizeof(char));
   strcpy(newnode->text, text);
   int address = hashAddress(text);
   newnode->next = Table[address];
   Table[address] = newnode;
   printf("texto: %s do tipo %d foi inserido na posição %d da tabela com sucesso\n", text, type, address);
   hashPrint();
+  return newnode;
 }
 
 struct hashNode* hashFind(char* text) {
