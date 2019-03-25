@@ -1,7 +1,7 @@
 //Includes
 #include <stdio.h>
 #include "tokens.h"
-#include "hash.c"
+
 //Defines
 #define print_nome(TOKEN) \
   printf("%d " #TOKEN " [%s]\n", getLineNumber(), yytext);
@@ -27,6 +27,7 @@ int main (int argc, char **argv)
   int token = 0;
   while ((isRunning())) {
     token = yylex();
+    //printf("%s", yytext);
     switch (token){
     case ',':
     case ';':
@@ -66,10 +67,10 @@ int main (int argc, char **argv)
     case OPERATOR_OR: print_nome(OPERATOR_OR); break;
     case OPERATOR_AND: print_nome(OPERATOR_AND); break;
     case OPERATOR_NOT: print_nome(OPERATOR_NOT); break;
-    case LIT_INTEGER: print_nome(LIT_INTEGER); hashInsert(LIT_INTEGER, yytext); break;
+    case LIT_INTEGER: print_nome(LIT_INTEGER); break;
     case LIT_FLOAT: print_nome(LIT_FLOAT); break;
-    case LIT_CHAR: print_nome(LIT_CHAR); hashInsert(LIT_CHAR, yytext); break;
-    case LIT_STRING: print_nome(LIT_STRING); hashInsert(LIT_STRING, yytext); break;
+    case LIT_CHAR: print_nome(LIT_CHAR); break;
+    case LIT_STRING: print_nome(LIT_STRING); break;
     case TK_IDENTIFIER: print_nome(TK_IDENTIFIER); break;
     case TOKEN_ERROR:  print_nome(TOKEN_ERROR); break;
     case 0: return 0;
