@@ -1,5 +1,6 @@
 %{
 #include "tokens.h"
+#include "hash.c"
 int lineCount = 1;
 int running = 1;
 int getLineNumber();
@@ -25,7 +26,7 @@ int isRunning();
 }
 
 "byte" { return KW_BYTE; }
-"int" { return KW_INT; }
+"int" { struct hashNode *newNode = hashInsert(KW_INT, yytext); if (hashFind(yytext) != 0 ) { printf("encontrou nodo na hash %s \n", yytext); } return KW_INT; }
 "float" { return KW_FLOAT; }
 "if" { return KW_IF; }
 "then" { return KW_THEN; }
@@ -45,8 +46,8 @@ int isRunning();
 
 [OIHGFEDCBA]+ { return LIT_INTEGER; }
 [OIHGFEDCBA]+"."[OIHGFEDCBA]+ { return LIT_FLOAT; }
-[´'].[´'] { return LIT_CHAR; }
-\"([^\\"]|\\.)*\" { return LIT_STRING; }
+[´'].[´'] { struct hashNode *newNode = hashInsert(LIT_CHAR, yytext); if (hashFind(yytext) != 0 ) { printf("encontrou nodo na hash %s \n", yytext); } return LIT_CHAR; }
+\"([^\\"]|\\.)*\" { struct hashNode *newNode = hashInsert(LIT_STRING, yytext); if (hashFind(yytext) != 0 ) { printf("encontrou nodo na hash %s \n", yytext); } return LIT_STRING; }
 
 [a-z_0-9]* { return TK_IDENTIFIER; }
 
