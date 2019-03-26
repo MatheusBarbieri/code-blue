@@ -2,8 +2,6 @@
 #include <string.h>
 #include "hash.h"
 
-//extern char *yytext;
-
 int hashAddress(char* text) {
   int address = 1;
   int i;
@@ -22,8 +20,6 @@ struct hashNode* hashInsert(int type, char* text) {
   int address = hashAddress(text);
   newnode->next = Table[address];
   Table[address] = newnode;
-  printf("texto: %s do tipo %d foi inserido na posição %d da tabela com sucesso\n", text, type, address);
-  hashPrint();
   return newnode;
 }
 
