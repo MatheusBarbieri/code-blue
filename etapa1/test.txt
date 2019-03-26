@@ -19,6 +19,10 @@
 #
 $
 
+CDE
+CDE
+CDE
+
 int a = ABC
 float _b = OAC.ABC
 byte 90 = OFE

@@ -26,7 +26,7 @@ int isRunning();
 }
 
 "byte" { return KW_BYTE; }
-"int" { struct hashNode *newNode = hashInsert(KW_INT, yytext); if (hashFind(yytext) != 0 ) { printf("encontrou nodo na hash %s \n", yytext); } return KW_INT; }
+"int" { return KW_INT; }
 "float" { return KW_FLOAT; }
 "if" { return KW_IF; }
 "then" { return KW_THEN; }
@@ -44,10 +44,10 @@ int isRunning();
 "and" { return OPERATOR_AND; }
 "not" { return OPERATOR_NOT; }
 
-[OIHGFEDCBA]+ { return LIT_INTEGER; }
-[OIHGFEDCBA]+"."[OIHGFEDCBA]+ { return LIT_FLOAT; }
-[´'].[´'] { struct hashNode *newNode = hashInsert(LIT_CHAR, yytext); if (hashFind(yytext) != 0 ) { printf("encontrou nodo na hash %s \n", yytext); } return LIT_CHAR; }
-\"([^\\"]|\\.)*\" { struct hashNode *newNode = hashInsert(LIT_STRING, yytext); if (hashFind(yytext) != 0 ) { printf("encontrou nodo na hash %s \n", yytext); } return LIT_STRING; }
+[OIHGFEDCBA]+ { struct hashNode *newNode = hashInsert(LIT_INTEGER, yytext); return LIT_INTEGER; }
+[OIHGFEDCBA]+"."[OIHGFEDCBA]+ { struct hashNode *newNode = hashInsert(LIT_FLOAT, yytext); return LIT_FLOAT; }
+[´'].[´'] { struct hashNode *newNode = hashInsert(LIT_CHAR, yytext); return LIT_CHAR; }
+\"([^\\"]|\\.)*\" { struct hashNode *newNode = hashInsert(LIT_STRING, yytext); return LIT_STRING; }
 
 [a-z_0-9]* { return TK_IDENTIFIER; }
 
@@ -57,7 +57,7 @@ int isRunning();
 
 int getLineNumber() { return lineCount; }
 int isRunning() { return running; }
-int initMe() { printf("Aqui se inicializa a hash"); return 0;}
+void initMe() { }
 
 int yywrap() {
   running = 0;
