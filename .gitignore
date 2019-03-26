@@ -1,3 +1,15 @@
+#lex files
+lex.yy.*
+
+# Project bins
+etapa1/etapa1
+etapa2/etapa2
+etapa3/etapa3
+etapa4/etapa4
+etapa5/etapa5
+etapa6/etapa6
+etapa7/etapa7
+
 # Prerequisites
 *.d
 
