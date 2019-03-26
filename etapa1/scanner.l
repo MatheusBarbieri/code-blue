@@ -1,5 +1,6 @@
 %{
 #include "tokens.h"
+#include "hash.c"
 int lineCount = 1;
 int running = 1;
 int getLineNumber();
@@ -43,10 +44,10 @@ int isRunning();
 "and" { return OPERATOR_AND; }
 "not" { return OPERATOR_NOT; }
 
-[OIHGFEDCBA]+ { return LIT_INTEGER; }
-[OIHGFEDCBA]+"."[OIHGFEDCBA]+ { return LIT_FLOAT; }
-[´'].[´'] { return LIT_CHAR; }
-\"([^\\"]|\\.)*\" { return LIT_STRING; }
+[OIHGFEDCBA]+ { struct hashNode *newNode = hashInsert(LIT_INTEGER, yytext); return LIT_INTEGER; }
+[OIHGFEDCBA]+"."[OIHGFEDCBA]+ { struct hashNode *newNode = hashInsert(LIT_FLOAT, yytext); return LIT_FLOAT; }
+[´'].[´'] { struct hashNode *newNode = hashInsert(LIT_CHAR, yytext); return LIT_CHAR; }
+\"([^\\"]|\\.)*\" { struct hashNode *newNode = hashInsert(LIT_STRING, yytext); return LIT_STRING; }
 
 [a-z_0-9]* { return TK_IDENTIFIER; }
 
@@ -56,7 +57,7 @@ int isRunning();
 
 int getLineNumber() { return lineCount; }
 int isRunning() { return running; }
-int initMe() { printf("Aqui se inicializa a hash"); return 0;}
+void initMe() { }
 
 int yywrap() {
   running = 0;
