@@ -1,4 +1,4 @@
-.PHONY: clean
+.PHONY: clean test
 
 UNAME := $(shell uname)
 
@@ -20,6 +20,9 @@ parser.tab.o:
 lex.yy.o:
 	flex --header-file=lex.yy.h scanner.l
 	gcc -c lex.yy.c
+
+test:
+	python tests.py
 
 clean:
 	rm -rf lex.yy.* parser.tab.* parser.output etapa2 results.txt errors.txt
