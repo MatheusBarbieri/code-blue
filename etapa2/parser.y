@@ -12,8 +12,6 @@ extern int getLineNumber();
 %token KW_FLOAT
 
 %token KW_IF
-%precedence KW_THEN
-%precedence KW_ELSE
 
 %token KW_LOOP
 %token KW_LEAP
@@ -32,6 +30,8 @@ extern int getLineNumber();
 
 %start entry
 
+%right KW_THEN KW_ELSE
+
 %left '<' '>' OPERATOR_LE OPERATOR_GE OPERATOR_EQ OPERATOR_DIF
 %left OPERATOR_OR
 %left OPERATOR_AND
@@ -43,7 +43,9 @@ extern int getLineNumber();
 
 %%
 
-entry: program | %empty ;
+entry: program
+     |
+     ;
 
 program: declaration program | declaration ;
 
@@ -60,7 +62,7 @@ variable: primitive_type TK_IDENTIFIER '=' literal ';'
 vector: primitive_type TK_IDENTIFIER '[' LIT_INTEGER ']' vector_initialization ';'
 
 vector_initialization: ':' literal_list
-                     | %empty
+                     |
                      ;
 
 vector_access: TK_IDENTIFIER '[' expression ']'
@@ -116,13 +118,13 @@ command: assignment
        | output_statement
        | return_statement
        | command_block
-       | %empty
+       |
        ;
 
   // assignment
 assignment: TK_IDENTIFIER '=' expression
-           | vector_access '=' expression
-           ;
+          | vector_access '=' expression
+          ;
 
   //flow control
 flow_control: if_statement
@@ -141,14 +143,17 @@ printables: printable ',' printables
           | printable
           ;
 
-printable: LIT_STRING | expression ;
+printable: LIT_STRING
+         | expression
+         ;
 
   // return statement
 return_statement: KW_RETURN expression ;
 
   // if statement
-if_statement: KW_IF '(' expression ')' KW_THEN command ;
-            | KW_IF '(' expression ')' KW_THEN command KW_ELSE command ;
+if_statement: KW_IF '(' expression ')' KW_THEN command
+            | KW_IF '(' expression ')' KW_THEN command KW_ELSE command
+            ;
 
   // loop
 loop_statement: KW_LOOP '(' expression ')' command ;
