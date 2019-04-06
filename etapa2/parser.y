@@ -1,11 +1,16 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
+#include "hash.h"
 
 int yylex(void);
 void yyerror (char const *s);
 extern int getLineNumber();
 %}
+
+%union {
+	struct hashNode* symbol;
+}
 
 %token KW_BYTE
 %token KW_INT
@@ -20,10 +25,15 @@ extern int getLineNumber();
 %token KW_PRINT
 %token KW_RETURN
 
-%token LIT_INTEGER
-%token LIT_FLOAT
-%token LIT_CHAR
-%token LIT_STRING
+//%token LIT_INTEGER
+//%token LIT_FLOAT
+//%token LIT_CHAR
+//%token LIT_STRING
+
+%token<symbol> LIT_INTEGER
+%token<symbol> LIT_FLOAT
+%token<symbol> LIT_CHAR
+%token<symbol> LIT_STRING
 
 %token TK_IDENTIFIER
 %token TOKEN_ERROR
