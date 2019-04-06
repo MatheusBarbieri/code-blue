@@ -44,10 +44,10 @@ int isRunning();
 "and" { return OPERATOR_AND; }
 "not" { return OPERATOR_NOT; }
 
-[OIHGFEDCBA]+ { struct hashNode *newNode = hashInsert(LIT_INTEGER, yytext); return LIT_INTEGER; }
-[OIHGFEDCBA]+"."[OIHGFEDCBA]+ { struct hashNode *newNode = hashInsert(LIT_FLOAT, yytext); return LIT_FLOAT; }
-[´'].[´'] { struct hashNode *newNode = hashInsert(LIT_CHAR, yytext); return LIT_CHAR; }
-\"([^\\"]|\\.)*\" { struct hashNode *newNode = hashInsert(LIT_STRING, yytext); return LIT_STRING; }
+[OIHGFEDCBA]+ { yylval.symbol = hashInsert(LIT_INTEGER, yytext); return LIT_INTEGER; }
+[OIHGFEDCBA]+"."[OIHGFEDCBA]+ { yylval.symbol = hashInsert(LIT_FLOAT, yytext); return LIT_FLOAT; }
+[´'].[´'] { yylval.symbol = hashInsert(LIT_CHAR, yytext); return LIT_CHAR; }
+\"([^\\"]|\\.)*\" { yylval.symbol = hashInsert(LIT_STRING, yytext); return LIT_STRING; }
 
 [a-z_0-9]* { return TK_IDENTIFIER; }
 
