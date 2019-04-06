@@ -32,12 +32,12 @@ extern int getLineNumber();
 
 %start entry
 
+%left '<' '>' OPERATOR_LE OPERATOR_GE OPERATOR_EQ OPERATOR_DIF
+%left OPERATOR_OR
+%left OPERATOR_AND
 %left '+' '-'
 %left '*' '/' '%'
 %left '^'
-%left OPERATOR_OR
-%left OPERATOR_AND
-%left '<' '>' OPERATOR_LE OPERATOR_GE OPERATOR_EQ OPERATOR_DIF
 
 %right OPERATOR_NOT
 
