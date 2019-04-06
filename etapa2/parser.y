@@ -63,7 +63,7 @@ vector_initialization: ':' literal_list
                      | %empty
                      ;
 
-vector_acess: TK_IDENTIFIER '[' expression ']'
+vector_access: TK_IDENTIFIER '[' expression ']'
 
   // Tipos Primitivos
 primitive_type: KW_BYTE
@@ -110,7 +110,7 @@ command_list: command
             ;
 
   // command
-command: attribution
+command: assignment
        | flow_control
        | input_statement
        | output_statement
@@ -119,9 +119,9 @@ command: attribution
        | %empty
        ;
 
-  // attribution
-attribution: TK_IDENTIFIER '=' expression
-           | vector_acess '=' expression
+  // assignment
+assignment: TK_IDENTIFIER '=' expression
+           | vector_access '=' expression
            ;
 
   //flow control
@@ -158,7 +158,7 @@ expression: '(' expression ')'
           | literal
           | function_call
           | TK_IDENTIFIER
-          | vector_acess
+          | vector_access
           | expression '+' expression
           | expression '-' expression
           | expression '*' expression
