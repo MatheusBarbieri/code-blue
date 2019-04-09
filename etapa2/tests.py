@@ -15,12 +15,13 @@ print('Running {} {}.'.format(str(tests_number), 'test' if tests_number == 1 els
 
 for file in dir_list:
 
-    with open('./tests/{}'.format(file)) as ifile:
+    file_path = './tests/{}'.format(file)
+    with open(file_path) as ifile:
         isError = ('ZZ ERROR' in ifile.read())
         ifile.seek(0, 0)
 
-        execution = ['./etapa2']
-        process = subprocess.Popen(execution, stdin=ifile, stdout=subprocess.PIPE)
+        execution = ['./etapa2', file_path]
+        process = subprocess.Popen(execution, stdout=subprocess.PIPE)
         result = process.communicate()[0].decode('utf-8')
 
         if process.returncode and not isError or isError and not process.returncode:

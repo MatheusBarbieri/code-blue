@@ -25,11 +25,6 @@ extern int getLineNumber();
 %token KW_PRINT
 %token KW_RETURN
 
-//%token LIT_INTEGER
-//%token LIT_FLOAT
-//%token LIT_CHAR
-//%token LIT_STRING
-
 %token<symbol> LIT_INTEGER
 %token<symbol> LIT_FLOAT
 %token<symbol> LIT_CHAR
