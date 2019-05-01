@@ -1,0 +1,9 @@
+ZZ UFRGS - Compiladores - Marcelo Johann - 2019/1
+ZZ ERROR
+
+byte a = O;
+
+loop (1<IO) {
+  a = a + A;
+  leap;
+};
