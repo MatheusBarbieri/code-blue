@@ -33,7 +33,7 @@ AST* root = NULL;
 %token<symbol> LIT_CHAR
 %token<symbol> LIT_STRING
 
-%token TK_IDENTIFIER
+%token<symbol> TK_IDENTIFIER
 %token TOKEN_ERROR
 
 %type<ast> entry
