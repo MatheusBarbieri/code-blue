@@ -12,7 +12,8 @@ int isRunning();
 %%
 
 [ \t]+ { }
-\n { lineCount++; }
+
+\r?\n { lineCount++; }
 
 "ZZ".* { }
 "XXX".* BEGIN(COMMENT_BLOCK);
