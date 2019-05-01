@@ -2,14 +2,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "hash.h"
+#include "ast.h"
 
 int yylex(void);
 void yyerror (char const *s);
 extern int getLineNumber();
+AST* root = NULL;
 %}
 
 %union {
 	struct hashNode* symbol;
+	struct ast_node* ast;
 }
 
 %token KW_BYTE
@@ -33,6 +36,37 @@ extern int getLineNumber();
 %token TK_IDENTIFIER
 %token TOKEN_ERROR
 
+%type<ast> entry
+%type<ast> program
+%type<ast> declaration
+%type<ast> variable
+%type<ast> vector
+%type<ast> vector_initialization
+%type<ast> vector_access
+%type<ast> primitive_type
+%type<ast> literal
+%type<ast> literal_list
+%type<ast> function
+%type<ast> function_parameters
+%type<ast> function_call
+%type<ast> arguments
+%type<ast> argument_list
+%type<ast> param_list
+%type<ast> param
+%type<ast> command_block
+%type<ast> command_list
+%type<ast> command
+%type<ast> assignment
+%type<ast> flow_control
+%type<ast> input_statement
+%type<ast> output_statement
+%type<ast> printables
+%type<ast> printable
+%type<ast> return_statement
+%type<ast> if_statement
+%type<ast> loop_statement
+%type<ast> expression
+
 %start entry
 
 %right KW_THEN KW_ELSE
@@ -48,20 +82,21 @@ extern int getLineNumber();
 
 %%
 
-entry: program
-     |
+entry: program { astPrint(0, root); }
+		 | { astPrint(0, root); }
      ;
 
-program: declaration program | declaration ;
+program: declaration program { root = $$ = astCreate(AST_DEC, 0, $1, $2, 0, 0); }
+			 | declaration { root = $$ = astCreate(AST_DEC, 0, $1, 0, 0, 0); } ;
 
   //declarations
-declaration: variable
-           | vector
-           | function
+declaration: variable { $$ = $1 } ;
+           | vector { $$ = astCreate(AST_VET, 0, $1, 0, 0, 0); } ;
+           | function { $$ = astCreate(AST_FUN, 0, $1, 0, 0, 0); } ;
            ;
 
   //variable
-variable: primitive_type TK_IDENTIFIER '=' literal ';'
+variable: primitive_type TK_IDENTIFIER '=' literal ';' { astCreate(AST_VAR, 0, $1, $4, 0, 0); }
 
   //vector
 vector: primitive_type TK_IDENTIFIER '[' LIT_INTEGER ']' vector_initialization ';'

@@ -1,6 +1,4 @@
 #include <stdlib.h>
-
-#include "hash.c"
 #include "ast.h"
 
 AST* astCreate(int type, struct hashNode *symbol, AST *node0, AST *node1, AST *node2, AST *node3){
@@ -21,25 +19,25 @@ void astPrint(int level, AST *node){
 	if(node == 0)
 		return;
 
-  	for(i=0; i<level; i++)
-   		fprintf(stderr, "   ");
+	for(i=0; i<level; i++)
+	fprintf(stderr, "   ");
 
-      switch(node->type) {
-    		case AST_SYMBOL: fprintf(stderr, "AST_SYMBOL, "); 			break;
-    		case AST_DEC: fprintf(stderr, "AST_DEC, "); 				break;
-      }
+	switch(node->type) {
+		case AST_SYMBOL: fprintf(stderr, "AST_SYMBOL, "); 			break;
+		case AST_DEC: fprintf(stderr, "AST_DEC, "); 				break;
+	}
 
-      	if(node->symbol != 0)
-      		fprintf(stderr, "%s, \n", node->symbol->text);
-      	else
-      		fprintf(stderr, "<no symbol>, \n");
+	if(node->symbol != 0)
+	fprintf(stderr, "%s, \n", node->symbol->text);
+	else
+	fprintf(stderr, "<no symbol>, \n");
 
-      	for (i=0; i<MAX_NODES; i++)
-      		astPrint(level+1, node->son[i]);
+	for (i=0; i<MAX_NODES; i++)
+	astPrint(level+1, node->son[i]);
 
 }
 
-int main() {
+/* int main() {
 
 struct hashNode *node1 = hashInsert(1, "cristiano");
 struct hashNode *node2 = hashInsert(1, "salla");
@@ -62,5 +60,5 @@ AST *tree1 = astCreate(1, node1, tree2, tree3, 0, 0);
 
 astPrint(0, tree1);
 //printf("(Table[0] = %s)\n", Table[97]->text);
-  return -1;
-}
+return -1;
+} */

@@ -1,6 +1,6 @@
 %{
 #include "parser.tab.h"
-#include "hash.c"
+#include "hash.h"
 int lineCount = 1;
 int running = 1;
 int getLineNumber();
