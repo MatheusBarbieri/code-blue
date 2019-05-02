@@ -181,6 +181,7 @@ void astToFile(AST *node, FILE *f){
 		}
 		case AST_FUNC_CALL: {
 			astToFile(node->son[NODE_ZERO], f);
+			fprintf(f, " ");
 			astToFile(node->son[NODE_ONE], f);
 			break;
 		}
@@ -215,7 +216,9 @@ void astToFile(AST *node, FILE *f){
 		}
 		case AST_CMD: {
 			if (node->son[NODE_ZERO]) {
+				fprintf(f, " ");
 				astToFile(node->son[NODE_ZERO], f);
+				fprintf(f, " ");
 			}
 			break;
 		}
@@ -226,7 +229,7 @@ void astToFile(AST *node, FILE *f){
 			break;
 		}
 		case AST_LEAP: {
-			fprintf(f, "leap");
+			fprintf(f, "leap ");
 			break;
 		}
 		case AST_INPUT: {
@@ -258,7 +261,7 @@ void astToFile(AST *node, FILE *f){
 			fprintf(f, ") then ");
 			astToFile(node->son[NODE_ONE], f);
 			if (node->son[NODE_TWO]) {
-				fprintf(f, "else ");
+				fprintf(f, " else ");
 				astToFile(node->son[NODE_TWO], f);
 			}
 			break;
@@ -361,7 +364,7 @@ void astToFile(AST *node, FILE *f){
 			break;
 		}
 		case AST_EXP_NOT: {
-			fprintf(f, "not ");
+			fprintf(f, " not ");
 			astToFile(node->son[NODE_ONE], f);
 			break;
 		}
