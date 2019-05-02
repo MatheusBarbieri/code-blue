@@ -6,7 +6,8 @@
 
 int yylex(void);
 void yyerror (char const *s);
-extern int getLineNumber();
+int getLineNumber();
+AST* getAST();
 AST* root = NULL;
 %}
 
@@ -239,6 +240,10 @@ expression: '(' expression ')' { $$ = astCreate(AST_EXP_PARENTHESIS, 0, $2, 0, 0
           ;
 
 %%
+
+AST* getAST() {
+    return root;
+}
 
 void yyerror(const char *msg) {
     printf("Error on line %d: %s\n", getLineNumber(), msg);
