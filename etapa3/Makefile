@@ -31,7 +31,9 @@ lex.yy.o:
 	gcc -c lex.yy.c
 
 test:
-	python tests.py
+	./etapa3 test.txt output1.txt
+	./etapa3 output1.txt output2.txt
+	diff output1.txt output2.txt
 
 clean:
-	rm -rf lex.yy.* parser.tab.* main.o hash.o ast.o parser.output etapa3 results.txt errors.txt
+	rm -rf lex.yy.* parser.tab.* main.o hash.o ast.o parser.output etapa3 results.txt errors.txt output1.txt output2.txt
