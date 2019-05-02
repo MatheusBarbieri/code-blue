@@ -1,6 +1,14 @@
 #lex files
 lex.yy.*
 
+# Outputs
+*errors.txt
+
+# Parser
+*parser.tab*
+*parser.output*
+*results.txt
+
 # Project bins
 etapa1/etapa1
 etapa2/etapa2

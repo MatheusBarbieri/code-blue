@@ -12,7 +12,8 @@ int isRunning();
 %%
 
 [ \t]+ { }
-\n { lineCount++; }
+
+\r?\n { lineCount++; }
 
 "ZZ".* { }
 "XXX".* BEGIN(COMMENT_BLOCK);
@@ -49,7 +50,7 @@ int isRunning();
 [´'].[´'] { yylval.symbol = hashInsert(LIT_CHAR, yytext); return LIT_CHAR; }
 \"([^\\"]|\\.)*\" { yylval.symbol = hashInsert(LIT_STRING, yytext); return LIT_STRING; }
 
-[a-z_0-9]* { return TK_IDENTIFIER; }
+[a-z_0-9]* { yylval.symbol = hashInsert(TK_IDENTIFIER, yytext); return TK_IDENTIFIER; }
 
 . {return TOKEN_ERROR; }
 

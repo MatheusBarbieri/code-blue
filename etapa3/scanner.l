@@ -1,6 +1,6 @@
 %{
 #include "parser.tab.h"
-#include "hash.c"
+#include "hash.h"
 int lineCount = 1;
 int running = 1;
 int getLineNumber();
@@ -12,7 +12,8 @@ int isRunning();
 %%
 
 [ \t]+ { }
-\n { lineCount++; }
+
+\r?\n { lineCount++; }
 
 "ZZ".* { }
 "XXX".* BEGIN(COMMENT_BLOCK);
@@ -46,10 +47,29 @@ int isRunning();
 
 [OIHGFEDCBA]+ { yylval.symbol = hashInsert(LIT_INTEGER, yytext); return LIT_INTEGER; }
 [OIHGFEDCBA]+"."[OIHGFEDCBA]+ { yylval.symbol = hashInsert(LIT_FLOAT, yytext); return LIT_FLOAT; }
-[´'].[´'] { yylval.symbol = hashInsert(LIT_CHAR, yytext); return LIT_CHAR; }
-\"([^\\"]|\\.)*\" { yylval.symbol = hashInsert(LIT_STRING, yytext); return LIT_STRING; }
+[´'].[´'] {
+    char *text;
+    int size = strlen(yytext);
+    text = (char*) calloc(size - 1, sizeof(char));
+    strncpy(text, &yytext[1], size - 1);
+    text[size - 2] = 0x0;
+    yylval.symbol = hashInsert(LIT_CHAR, text);
+    free(text);
+    return LIT_CHAR;
+}
 
-[a-z_0-9]* { return TK_IDENTIFIER; }
+\"([^\\"]|\\.)*\" {
+    char *text;
+    int size = strlen(yytext);
+    text = (char*) calloc(size - 1, sizeof(char));
+    strncpy(text, &yytext[1], size - 1);
+    text[size - 2] = 0x0;
+    yylval.symbol = hashInsert(LIT_STRING, text);
+    free(text);
+    return LIT_STRING;
+}
+
+[a-z_0-9]* { yylval.symbol = hashInsert(TK_IDENTIFIER, yytext); return TK_IDENTIFIER; }
 
 . {return TOKEN_ERROR; }
 
