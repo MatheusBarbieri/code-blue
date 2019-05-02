@@ -68,6 +68,7 @@ AST* root = NULL;
 %type<ast> if_statement
 %type<ast> loop_statement
 %type<ast> expression
+%type<ast> identifier
 
 %start entry
 
@@ -84,7 +85,7 @@ AST* root = NULL;
 
 %%
 
-entry: program { root = $1; astPrint(0, root); }
+entry: program { root = $1; } // astPrint(0, root); }
 	 ;
 
 program: declaration program { $$ = astCreate(AST_DECL, 0, $1, $2, 0, 0); }
@@ -98,11 +99,11 @@ declaration: variable { $$ = $1; }
            ;
 
   //variable
-variable: primitive_type TK_IDENTIFIER '=' literal ';' { $$ = astCreate(AST_VARIABLE, $2, $1, $4, 0, 0); }
+variable: primitive_type identifier '=' literal ';' { $$ = astCreate(AST_VARIABLE, 0, $1, $2, $4, 0); }
 		;
 
   //vector
-vector: primitive_type TK_IDENTIFIER '[' vector_size ']' vector_initialization ';' { $$ = astCreate(AST_VECTOR, $2, $1, $4, $6, 0); }
+vector: primitive_type identifier '[' vector_size ']' vector_initialization ';' { $$ = astCreate(AST_VECTOR, 0, $1, $2, $4, $6); }
 	  ;
 
 vector_size: LIT_INTEGER { $$ = astCreate(AST_LIT_INT, $1, 0, 0, 0, 0); }
@@ -112,7 +113,7 @@ vector_initialization: ':' literal_list { $$ = astCreate(AST_VECTOR_INIT, 0, $2,
                      | { $$ = NULL; }
                      ;
 
-vector_access: TK_IDENTIFIER '[' expression ']' { $$ = astCreate(AST_VECTOR_ACCS, $1, $3, 0, 0, 0); }
+vector_access: identifier '[' expression ']' { $$ = astCreate(AST_VECTOR_ACCS, 0, $1, $3, 0, 0); }
 			 ;
 
   // Tipos Primitivos
@@ -132,7 +133,7 @@ literal_list: literal literal_list { $$ = astCreate(AST_LIT_LIST, 0, $1, $2, 0, 
             ;
 
  // function
-function: primitive_type TK_IDENTIFIER function_parameters command_block ';' { $$ = astCreate(AST_FUNC, $2, $1, $3, $4, 0); }
+function: primitive_type identifier function_parameters command_block ';' { $$ = astCreate(AST_FUNC, 0, $1, $2, $3, $4); }
         ;
 
 function_parameters: '(' param_list ')' { $$ = astCreate(AST_FUNC_PARAMS, 0, $2, 0, 0, 0); }
@@ -140,7 +141,7 @@ function_parameters: '(' param_list ')' { $$ = astCreate(AST_FUNC_PARAMS, 0, $2,
                    ;
 
   // function_call
-function_call: TK_IDENTIFIER arguments { $$ = astCreate(AST_FUNC_CALL, $1, $2, 0, 0, 0); }
+function_call: identifier arguments { $$ = astCreate(AST_FUNC_CALL, 0, $1, $2, 0, 0); }
              ;
 
 arguments: '(' argument_list ')' { $$ = astCreate(AST_FUNC_ARGS, 0, $2, 0, 0, 0); }
@@ -156,7 +157,7 @@ param_list: param ',' param_list { $$ = astCreate(AST_PARAM_LIST, 0, $1, $3, 0, 
           | param { $$ = astCreate(AST_PARAM_LIST, 0, $1, 0, 0, 0); }
           ;
 
-param: primitive_type TK_IDENTIFIER { $$ = astCreate(AST_PARAM, $2, $1, 0, 0, 0); }
+param: primitive_type identifier { $$ = astCreate(AST_PARAM, 0, $1, $2, 0, 0); }
 
  // command_block
 command_block: '{' command_list '}' { $$ = astCreate(AST_CMD_BLOCK, 0, $2, 0, 0, 0); }
@@ -177,7 +178,7 @@ command: assignment { $$ = astCreate(AST_CMD, 0, $1, 0, 0, 0); }
        ;
 
   // assignment
-assignment: TK_IDENTIFIER '=' expression { $$ = astCreate(AST_ASSING, $1, 0, $3, 0, 0); }
+assignment: identifier '=' expression { $$ = astCreate(AST_ASSING, 0, $1, $3, 0, 0); }
           | vector_access '=' expression { $$ = astCreate(AST_ASSING, 0, $1, $3, 0, 0); }
           ;
 
@@ -188,7 +189,7 @@ flow_control: if_statement { $$ = $1; }
             ;
 
   // input statement
-input_statement: KW_READ TK_IDENTIFIER { $$ = astCreate(AST_INPUT, $2, 0, 0, 0, 0); }
+input_statement: KW_READ identifier { $$ = astCreate(AST_INPUT, 0, $2, 0, 0, 0); }
 			   ;
 
   // output statement
@@ -218,10 +219,10 @@ loop_statement: KW_LOOP '(' expression ')' command { $$ = astCreate(AST_LOOP, 0,
 
   //expression
 expression: '(' expression ')' { $$ = astCreate(AST_EXP_PARENTHESIS, 0, $2, 0, 0, 0); }
-          | literal { $$ = astCreate(AST_EXP_LIT, 0, $1, 0, 0, 0); }
-          | function_call { $$ = astCreate(AST_EXP_FUNC, 0, $1, 0, 0, 0); }
-          | TK_IDENTIFIER { $$ = astCreate(AST_EXP_IDENTIFIER, $1, 0, 0, 0, 0); }
-          | vector_access { $$ = astCreate(AST_EXP_VECTOR_ACCS, 0, $1, 0, 0, 0); }
+          | literal { $$ = $1; }
+          | function_call { $$ = $1; }
+		  | vector_access { $$ = $1; }
+          | identifier { $$ = $1; }
           | expression '+' expression { $$ = astCreate(AST_EXP_SUM, 0, $1, $3, 0, 0); }
           | expression '-' expression { $$ = astCreate(AST_EXP_SUB, 0, $1, $3, 0, 0); }
           | expression '*' expression { $$ = astCreate(AST_EXP_MUL, 0, $1, $3, 0, 0); }
@@ -238,6 +239,9 @@ expression: '(' expression ')' { $$ = astCreate(AST_EXP_PARENTHESIS, 0, $2, 0, 0
           | expression OPERATOR_OR expression { $$ = astCreate(AST_EXP_OR, 0, $1, $3, 0, 0); }
           | OPERATOR_NOT expression { $$ = astCreate(AST_EXP_NOT, 0, $2, 0, 0, 0); }
           ;
+
+identifier: TK_IDENTIFIER { $$ = astCreate(AST_IDENTIFIER, $1, 0, 0, 0, 0); }
+		  ;
 
 %%
 
