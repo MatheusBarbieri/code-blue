@@ -10,8 +10,17 @@ ifeq ($(UNAME), Linux)
 LIBS += -lfl
 endif
 
-all: parser.tab.o lex.yy.o
-	gcc -Wall main.c lex.yy.o parser.tab.o $(LIBS) -o etapa3
+all: hash.o parser.tab.o lex.yy.o ast.o main.o
+	gcc -Wall hash.o lex.yy.o parser.tab.o main.o ast.o -o etapa4
+
+main.o:
+	gcc -c main.c hash.c ast.c
+
+hash.o:
+	gcc -c hash.c
+
+ast.o:
+	gcc -c ast.c
 
 parser.tab.o:
 	bison -v --report=all -d parser.y
@@ -21,8 +30,5 @@ lex.yy.o:
 	flex --header-file=lex.yy.h scanner.l
 	gcc -c lex.yy.c
 
-test:
-	python tests.py
-
 clean:
-	rm -rf lex.yy.* parser.tab.* parser.output etapa2 results.txt errors.txt
+	rm -rf lex.yy.* parser.tab.* main.o hash.o ast.o parser.output etapa4 results.txt errors.txt output1.txt output2.txt
