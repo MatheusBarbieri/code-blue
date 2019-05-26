@@ -45,15 +45,15 @@ int isRunning();
 "and" { return OPERATOR_AND; }
 "not" { return OPERATOR_NOT; }
 
-[OIHGFEDCBA]+ { yylval.symbol = hashInsert(LIT_INTEGER, yytext); return LIT_INTEGER; }
-[OIHGFEDCBA]+"."[OIHGFEDCBA]+ { yylval.symbol = hashInsert(LIT_FLOAT, yytext); return LIT_FLOAT; }
+[OIHGFEDCBA]+ { yylval.symbol = hashInsert(SYMBOL_LIT_INTEGER, yytext); return LIT_INTEGER; }
+[OIHGFEDCBA]+"."[OIHGFEDCBA]+ { yylval.symbol = hashInsert(SYMBOL_LIT_FLOAT, yytext); return LIT_FLOAT; }
 [´'].[´'] {
     char *text;
     int size = strlen(yytext);
     text = (char*) calloc(size - 1, sizeof(char));
     strncpy(text, &yytext[1], size - 1);
     text[size - 2] = 0x0;
-    yylval.symbol = hashInsert(LIT_CHAR, text);
+    yylval.symbol = hashInsert(SYMBOL_LIT_CHAR, text);
     free(text);
     return LIT_CHAR;
 }
@@ -69,7 +69,7 @@ int isRunning();
     return LIT_STRING;
 }
 
-[a-z_0-9]* { yylval.symbol = hashInsert(TK_IDENTIFIER, yytext); return TK_IDENTIFIER; }
+[a-z_0-9]* { yylval.symbol = hashInsert(SYMBOL_TK_IDENTIFIER, yytext); return TK_IDENTIFIER; }
 
 . {return TOKEN_ERROR; }
 

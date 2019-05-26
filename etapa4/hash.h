@@ -5,8 +5,28 @@
 
 #define HASH_SIZE 997
 
+#define SYMBOL_LIT_INTEGER 100
+#define SYMBOL_LIT_FLOAT 101
+#define SYMBOL_LIT_CHAR 102
+#define SYMBOL_TK_IDENTIFIER 103
+
+#define SYMBOL_VAR 104
+#define SYMBOL_VECTOR	105
+#define SYMBOL_FUNCTION 106
+
+#define DATATYPE_INTEGER 107
+#define DATATYPE_FLOAT 108
+#define DATATYPE_CHAR 109
+
+struct paramList {
+  struct hashNode *symbol;
+  struct paramList* next;
+};
+
 struct hashNode {
   int type;
+  int datatype;
+  paramList* next;
   char *text;
   struct hashNode *next;
 };
