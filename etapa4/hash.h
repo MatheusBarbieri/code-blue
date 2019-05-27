@@ -16,17 +16,17 @@
 
 #define DATATYPE_INTEGER 107
 #define DATATYPE_FLOAT 108
-#define DATATYPE_CHAR 109
+#define DATATYPE_BOOL 109
 
 struct paramList {
   struct hashNode *symbol;
-  struct paramList* next;
+  struct paramList *next;
 };
 
 struct hashNode {
   int type;
   int datatype;
-  paramList* next;
+  paramList *params;
   char *text;
   struct hashNode *next;
 };
