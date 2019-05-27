@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include "hash.h"
 #include "ast.h"
+#include "semantic.h"
 
 int yylex(void);
 void yyerror (char const *s);
@@ -85,7 +86,7 @@ AST* root = NULL;
 
 %%
 
-entry: program { root = $1; } // astPrint(0, root); }
+entry: program { root = $1; semanticCheck($1); }
 	 ;
 
 program: declaration program { $$ = astCreate(AST_DECL, 0, $1, $2, 0, 0); }

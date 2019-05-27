@@ -1,8 +1,10 @@
-// prototypes
-
-/* verificar nao-declarada, dereclarada, anotar o tipo na declaração */
+#ifndef SEMANTIC_HEADER
+#define SEMANTIC_HEADER
 
 #include "ast.h"
 #include "hash.h"
 
-void setAndCheckRedeclared(AST *node);
+int semanticCheck(AST *node);
+void setAndCheckDeclarations(AST *node);
+
+#endif
