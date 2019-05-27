@@ -12,15 +12,19 @@ int hashAddress(char* text) {
 }
 
 struct hashNode* hashInsert(int type, char* text) {
-  struct hashNode *newnode;
-  newnode = (struct hashNode *)calloc(1, sizeof(struct hashNode));
-  newnode->type = type;
-  newnode->text = calloc (strlen(text)+1, sizeof(char));
-  strcpy(newnode->text, text);
+  struct hashNode *foundNode = hashFind(text);
+  if (foundNode) return foundNode;
+
+  struct hashNode *newNode = (struct hashNode *)calloc(1, sizeof(struct hashNode));
+
+  newNode->type = type;
+  newNode->params = NULL;
+  newNode->text = calloc(strlen(text)+1, sizeof(char));
+  strcpy(newNode->text, text);
   int address = hashAddress(text);
-  newnode->next = Table[address];
-  Table[address] = newnode;
-  return newnode;
+  newNode->next = Table[address];
+  Table[address] = newNode;
+  return newNode;
 }
 
 struct hashNode* hashFind(char* text) {
@@ -41,36 +45,4 @@ void hashPrint(void) {
       fprintf(stderr, "Table[%d] has %s\n", i, node->text);
     }
   }
-}
-
-void hashCheckUndeclared(void)
-{
-    structh hashNode *node;
-
-    int i;
-
-    for(i =0; i < HASH_SIZE; i++)
-    {
-        for(node = Table[i]; node; node = node->next)
-        {
-            astFind(0, getAST(), node->text);
-
-            if(node->type == TK_IDENTIFIER)
-            {
-                fprintf(stderr, "[SEMANTIC] Variable %s not declared!\n", node->text);
-                exit(4);
-            }
-            else if(node->type == LIT_CHAR || node->type == LIT_INTEGER || node->type == LIT_FLOAT )
-            {
-                switch(node->type)
-                {
-                    case LIT_CHAR: node->datatype = DATATYPE_INT; break;
-                    case LIT_INTEGER: node->datatype = DATATYPE_INT; break;
-                    case LIT_FLOAT: node->datatype = DATATYPE_FLOAT; break;
-                }
-
-                node->type = SYMBOL_SCALAR;
-            }
-        }
-    }
 }

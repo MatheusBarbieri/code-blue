@@ -26,7 +26,7 @@ struct paramList {
 struct hashNode {
   int type;
   int datatype;
-  paramList *params;
+  struct paramList *params;
   char *text;
   struct hashNode *next;
 };
