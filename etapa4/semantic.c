@@ -1,9 +1,34 @@
 #include <stdlib.h>
 #include "semantic.h"
 
+int semanticError = 0;
+
 int semanticCheck(AST *node) {
   setAndCheckDeclarations(node);
+
+  if (semanticError) {
+    fprintf(stderr, "%d semantic errors found!\n", semanticError);
+    exit(4);
+  }
   return 0;
+}
+
+void setAndCheckDeclarations(AST *node) {
+  if (node == NULL) return;
+
+  if (node->type == AST_DECL) {
+    setAndCheckDeclaration(node);
+  }
+
+  setAndCheckDeclarations(node->son[0]);
+  setAndCheckDeclarations(node->son[1]);
+  setAndCheckDeclarations(node->son[2]);
+  setAndCheckDeclarations(node->son[3]);
+
+  if (node->type == AST_IDENTIFIER && node->symbol->datatype == 0) {
+    fprintf(stderr, "[SEMANTIC ERROR] Identifier %s is undeclared\n", node->symbol->text);
+    semanticError++;
+  }
 }
 
 void setAndCheckDeclaration(AST *node) {
@@ -20,6 +45,7 @@ void setAndCheckDeclaration(AST *node) {
 
   if (symbol->type != SYMBOL_TK_IDENTIFIER) {
     fprintf(stderr, "[SEMANTIC ERROR] Identifier %s redeclared\n", symbol->text);
+    semanticError++;
   } else {
     switch (declaration->type) {
       case AST_VARIABLE:
@@ -31,6 +57,7 @@ void setAndCheckDeclaration(AST *node) {
 
         if (declaration->son[2]->type != AST_LIT_INT) {
           fprintf(stderr, "[SEMANTIC ERROR] Vector %s indexed with wrong type.\n", symbol->text);
+          semanticError++;
         }
 
         if (declaration->son[3]) {
@@ -48,6 +75,7 @@ void setAndCheckDeclaration(AST *node) {
           }
           if (typeError) {
             fprintf(stderr, "[SEMANTIC ERROR] Vector %s initialized with wrong type.\n", symbol->text);
+            semanticError++;
           }
         }
         break;
@@ -85,13 +113,5 @@ void setAndCheckDeclaration(AST *node) {
         }
         break;
     }
-  }
-}
-
-void setAndCheckDeclarations(AST *node) {
-  AST* current;
-
-  for (current = node; current != NULL; current = current->son[1]) {
-		setAndCheckDeclaration(current);
   }
 }
