@@ -6,5 +6,5 @@
 
 int semanticCheck(AST *node);
 void setAndCheckDeclarations(AST *node);
-
+void setAndCheckDeclaration(AST *node);
 #endif

@@ -8,6 +8,10 @@ float f = IO.EE;
 byte c = 'x';
 byte x = DE;
 
+byte incn ( byte x, byte n ) {
+  return x+n
+};
+
 byte main () {
   a = C;
   v[a] = AO;
@@ -33,8 +37,4 @@ byte main () {
   ;;;
   {;};
   {};
-};
-
-byte incn ( byte x, byte n ) {
-  return x+n
 };
