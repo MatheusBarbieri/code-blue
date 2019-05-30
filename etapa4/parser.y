@@ -108,7 +108,9 @@ vector: primitive_type identifier '[' vector_size ']' vector_initialization ';' 
 	  ;
 
 vector_size: LIT_INTEGER { $$ = astCreate(AST_LIT_INT, $1, 0, 0, 0, 0); }
-		   ;
+					 | LIT_CHAR { $$ = astCreate(AST_LIT_CHAR, $1, 0, 0, 0, 0); }
+					 | identifier
+					 ;
 
 vector_initialization: ':' literal_list { $$ = astCreate(AST_VECTOR_INIT, 0, $2, 0, 0, 0); }
                      | { $$ = NULL; }
@@ -222,7 +224,7 @@ loop_statement: KW_LOOP '(' expression ')' command { $$ = astCreate(AST_LOOP, 0,
 expression: '(' expression ')' { $$ = astCreate(AST_EXP_PARENTHESIS, 0, $2, 0, 0, 0); }
           | literal { $$ = $1; }
           | function_call { $$ = $1; }
-		  | vector_access { $$ = $1; }
+		  		| vector_access { $$ = $1; }
           | identifier { $$ = $1; }
           | expression '+' expression { $$ = astCreate(AST_EXP_SUM, 0, $1, $3, 0, 0); }
           | expression '-' expression { $$ = astCreate(AST_EXP_SUB, 0, $1, $3, 0, 0); }
