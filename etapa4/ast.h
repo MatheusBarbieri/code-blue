@@ -41,8 +41,10 @@
 #define AST_LIT_STRING 29
 #define AST_PRINT_EXP 30
 #define AST_RETURN 31
+
 #define AST_IF 32
 #define AST_LOOP 33
+
 #define AST_EXP_PARENTHESIS 34
 #define AST_EXP_SUM 35
 #define AST_EXP_SUB 36
@@ -63,6 +65,7 @@
 
 typedef struct ast_node{
     int type;
+    int datatype;
     struct hashNode *symbol;
     struct ast_node *son[MAX_NODES];
 } AST;

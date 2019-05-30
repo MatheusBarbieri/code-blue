@@ -5,12 +5,115 @@ int semanticError = 0;
 
 int semanticCheck(AST *node) {
   setAndCheckDeclarations(node);
+  checkOperands(node);
 
   if (semanticError) {
     fprintf(stderr, "%d semantic errors found!\n", semanticError);
     exit(4);
   }
   return 0;
+}
+
+int isArithmeticExpression(AST* node) {
+  return
+    node->type == AST_EXP_SUM ||
+    node->type == AST_EXP_SUB ||
+    node->type == AST_EXP_MUL ||
+    node->type == AST_EXP_DIV ||
+    node->type == AST_EXP_MOD;
+}
+
+int isLogicalExpression(AST* node) {
+  return
+    node->type == AST_EXP_LESS ||
+    node->type == AST_EXP_GREATER ||
+    node->type == AST_EXP_LE ||
+    node->type == AST_EXP_GE ||
+    node->type == AST_EXP_EQ ||
+    node->type == AST_EXP_DIF ||
+    node->type == AST_EXP_AND ||
+    node->type == AST_EXP_OR;
+}
+
+int isLiteral(AST* node) {
+  return
+    node->type == AST_LIT_INT ||
+    node->type == AST_LIT_CHAR ||
+    node->type == AST_LIT_FLOAT;
+}
+
+int literalType(AST* node) {
+  switch(node->type) {
+    case AST_LIT_INT:
+    case AST_LIT_CHAR:
+      return DATATYPE_INTEGER;
+    case AST_LIT_FLOAT:
+      return DATATYPE_FLOAT;
+  }
+
+  int val =
+    node->type == AST_LIT_INT ||
+    node->type == AST_LIT_CHAR ||
+    node->type == AST_LIT_FLOAT;
+  return val;
+}
+
+int isOperation(AST* node) {
+  return isLogicalExpression(node) || isArithmeticExpression(node);
+}
+
+int getType(AST* node) {
+  if (isOperation(node)) return node->datatype;
+  if (node->type == AST_IDENTIFIER) return node->symbol->datatype;
+  if (node->type == AST_VECTOR_ACCS || node->type == AST_FUNC_CALL) return getType(node->son[0]);
+  if (isLiteral(node)) return literalType(node);
+  return 0;
+}
+
+void checkArithmeticExpression(AST* node) {
+  int leftHandSideType = getType(node->son[0]);
+  int rightHandSideType = getType(node->son[1]);
+
+  int wrongType =
+    leftHandSideType == DATATYPE_BOOL ||
+    rightHandSideType == DATATYPE_BOOL ||
+    leftHandSideType == 0 ||
+    rightHandSideType == 0;
+
+  if (wrongType) {
+    fprintf(stderr, "[SEMANTIC ERROR] Arithmetic expression should not have booleans\n");
+    semanticError++;
+    return;
+  }
+
+  if (leftHandSideType > rightHandSideType) {
+    node->datatype = leftHandSideType;
+  } else {
+    node->datatype = rightHandSideType;
+  }
+}
+
+void checkOperands(AST *node) {
+  if (node == NULL) return;
+
+  checkOperands(node->son[0]);
+  checkOperands(node->son[1]);
+  checkOperands(node->son[2]);
+  checkOperands(node->son[3]);
+
+  if (isArithmeticExpression(node)) {
+    checkArithmeticExpression(node);
+  }
+
+  // if (isLogicalExpression(node)) {
+  //   checkLogicalExpression(node);
+  // }
+
+  //Checar pow
+
+  //Checar not
+
+  //Checar Chamadas de função
 }
 
 void setAndCheckDeclarations(AST *node) {

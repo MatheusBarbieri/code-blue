@@ -14,9 +14,10 @@
 #define SYMBOL_VECTOR	105
 #define SYMBOL_FUNCTION 106
 
-#define DATATYPE_INTEGER 107
-#define DATATYPE_FLOAT 108
-#define DATATYPE_BOOL 109
+#define DATATYPE_BYTE 107
+#define DATATYPE_INTEGER 108
+#define DATATYPE_FLOAT 109
+#define DATATYPE_BOOL 110
 
 struct paramList {
   struct hashNode *symbol;
