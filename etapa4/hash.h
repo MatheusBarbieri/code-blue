@@ -19,18 +19,18 @@
 #define DATATYPE_FLOAT 109
 #define DATATYPE_BOOL 110
 
-struct paramList {
+typedef struct paramList {
   struct hashNode *symbol;
   struct paramList *next;
-};
+} PARAM;
 
-struct hashNode {
+typedef struct hashNode {
   int type;
   int datatype;
   struct paramList *params;
   char *text;
   struct hashNode *next;
-};
+} HASH_NODE;
 
 struct hashNode *Table[HASH_SIZE];
 
