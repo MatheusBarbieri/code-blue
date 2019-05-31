@@ -8,8 +8,8 @@ float f = IO.EE;
 byte c = 'x';
 byte x = DE;
 
-byte incn ( byte x, byte n ) {
-  return x+n
+float incn ( byte x, byte n ) {
+  return x/n
 };
 
 byte main () {
@@ -20,8 +20,8 @@ byte main () {
   print "Digite um numero: \n";
   read a;
   loop (1<IO) {
-    1 = incn(1,I);
-    a = incn(a,I);
+    f = incn(1,I);
+    f = incn(a,I);
   };
 
   print "Incrementado algumas vezes fica ",a,"\n";

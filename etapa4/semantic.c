@@ -2,6 +2,7 @@
 #include "semantic.h"
 
 int semanticError = 0;
+int currentFunctionType = 0;
 
 int isArithmeticExpression(AST* node) {
   return
@@ -215,8 +216,27 @@ void checkVectorAcess(AST* node) {
   }
 }
 
+void registerFunctionContext(AST* node) {
+  if (node->type != AST_FUNC) return;
+  currentFunctionType = getType(node->son[1]);
+}
+
+void checkReturns(AST* node) {
+  if (node->type != AST_RETURN) return;
+
+  int wrongType = getType(node->son[0]) != currentFunctionType;
+
+  if (wrongType) {
+    fprintf(stderr, "[SEMANTIC ERROR] Return type mismatch function type.\n");
+    semanticError++;
+    return;
+  }
+}
+
 void typeCheck(AST *node) {
   if (node == NULL) return;
+
+  registerFunctionContext(node);
 
   typeCheck(node->son[0]);
   typeCheck(node->son[1]);
@@ -230,6 +250,7 @@ void typeCheck(AST *node) {
   checkAssignment(node);
   checkFunctionCall(node);
   checkVectorAcess(node);
+  checkReturns(node);
 }
 
 void setAndCheckDeclaration(AST *node) {
