@@ -63,14 +63,14 @@
 #define AST_EXP_NOT 49
 #define AST_IDENTIFIER 50
 
-typedef struct ast_node{
+typedef struct astNode{
     int type;
     int datatype;
-    struct hashNode *symbol;
-    struct ast_node *son[MAX_NODES];
+    HASH_NODE *symbol;
+    struct astNode *son[MAX_NODES];
 } AST;
 
-AST* astCreate(int type, struct hashNode *symbol, AST *node0, AST *node1, AST *node2, AST *node3);
+AST* astCreate(int type, HASH_NODE *symbol, AST *node0, AST *node1, AST *node2, AST *node3);
 void astToFile(AST* node, FILE *fileTree);
 void astPrint(int level, AST* node);
 

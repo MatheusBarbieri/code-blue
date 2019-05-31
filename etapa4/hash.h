@@ -32,11 +32,11 @@ typedef struct hashNode {
   struct hashNode *next;
 } HASH_NODE;
 
-struct hashNode *Table[HASH_SIZE];
+HASH_NODE *Table[HASH_SIZE];
 
 int hashAddress(char *text);
-struct hashNode* hashInsert(int type, char *text);
-struct hashNode* hashFind(char *text);
+HASH_NODE* hashInsert(int type, char *text);
+HASH_NODE* hashFind(char *text);
 void hashPrint(void);
 
 #endif

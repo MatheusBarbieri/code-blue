@@ -3,17 +3,6 @@
 
 int semanticError = 0;
 
-int semanticCheck(AST *node) {
-  setAndCheckDeclarations(node);
-  checkOperands(node);
-
-  if (semanticError) {
-    fprintf(stderr, "%d semantic errors found!\n", semanticError);
-    exit(4);
-  }
-  return 0;
-}
-
 int isArithmeticExpression(AST* node) {
   return
     node->type == AST_EXP_SUM ||
@@ -214,13 +203,13 @@ void checkFunctionCall(AST* node) {
   }
 }
 
-void checkOperands(AST *node) {
+void typeCheck(AST *node) {
   if (node == NULL) return;
 
-  checkOperands(node->son[0]);
-  checkOperands(node->son[1]);
-  checkOperands(node->son[2]);
-  checkOperands(node->son[3]);
+  typeCheck(node->son[0]);
+  typeCheck(node->son[1]);
+  typeCheck(node->son[2]);
+  typeCheck(node->son[3]);
 
   checkArithmeticExpression(node);
   checkRelationalExpression(node);
@@ -230,26 +219,8 @@ void checkOperands(AST *node) {
   checkFunctionCall(node);
 }
 
-void setAndCheckDeclarations(AST *node) {
-  if (node == NULL) return;
-
-  if (node->type == AST_DECL) {
-    setAndCheckDeclaration(node);
-  }
-
-  setAndCheckDeclarations(node->son[0]);
-  setAndCheckDeclarations(node->son[1]);
-  setAndCheckDeclarations(node->son[2]);
-  setAndCheckDeclarations(node->son[3]);
-
-  if (node->type == AST_IDENTIFIER && node->symbol->datatype == 0) {
-    fprintf(stderr, "[SEMANTIC ERROR] Identifier %s is undeclared\n", node->symbol->text);
-    semanticError++;
-  }
-}
-
 void setAndCheckDeclaration(AST *node) {
-  struct hashNode* symbol = node->son[0]->son[1]->symbol;
+  HASH_NODE* symbol = node->son[0]->son[1]->symbol;
   AST* declaration = node->son[0];
 
   int datatype = node->son[0]->son[0]->type;
@@ -305,7 +276,7 @@ void setAndCheckDeclaration(AST *node) {
           AST* param;
           for (param = parameters; param != NULL; param = param->son[1]) {
 
-            struct paramList* newParam = (struct paramList*) calloc(1, sizeof(struct paramList));
+            PARAM* newParam = (PARAM*) calloc(1, sizeof(PARAM));
             newParam->symbol = param->son[0]->son[1]->symbol;
             newParam->symbol->type = SYMBOL_VAR;
 
@@ -317,7 +288,7 @@ void setAndCheckDeclaration(AST *node) {
 
             newParam->next = NULL;
 
-            struct paramList* params = symbol->params;
+            PARAM* params = symbol->params;
             if(params) {
               while (params->next) {
                 params = params->next;
@@ -331,4 +302,33 @@ void setAndCheckDeclaration(AST *node) {
         break;
     }
   }
+}
+
+void setAndCheckDeclarations(AST *node) {
+  if (node == NULL) return;
+
+  if (node->type == AST_DECL) {
+    setAndCheckDeclaration(node);
+  }
+
+  setAndCheckDeclarations(node->son[0]);
+  setAndCheckDeclarations(node->son[1]);
+  setAndCheckDeclarations(node->son[2]);
+  setAndCheckDeclarations(node->son[3]);
+
+  if (node->type == AST_IDENTIFIER && node->symbol->datatype == 0) {
+    fprintf(stderr, "[SEMANTIC ERROR] Identifier %s is undeclared\n", node->symbol->text);
+    semanticError++;
+  }
+}
+
+int semanticCheck(AST *node) {
+  setAndCheckDeclarations(node);
+  typeCheck(node);
+
+  if (semanticError) {
+    fprintf(stderr, "%d semantic errors found!\n", semanticError);
+    exit(4);
+  }
+  return 0;
 }

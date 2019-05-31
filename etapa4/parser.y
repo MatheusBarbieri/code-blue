@@ -14,7 +14,7 @@ AST* root = NULL;
 
 %union {
 	struct hashNode* symbol;
-	struct ast_node* ast;
+	struct astNode* ast;
 }
 
 %token KW_BYTE

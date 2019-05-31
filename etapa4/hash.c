@@ -11,11 +11,11 @@ int hashAddress(char* text) {
   return address - 1;
 }
 
-struct hashNode* hashInsert(int type, char* text) {
-  struct hashNode *foundNode = hashFind(text);
+HASH_NODE* hashInsert(int type, char* text) {
+  HASH_NODE *foundNode = hashFind(text);
   if (foundNode) return foundNode;
 
-  struct hashNode *newNode = (struct hashNode *)calloc(1, sizeof(struct hashNode));
+  HASH_NODE *newNode = (HASH_NODE *)calloc(1, sizeof(HASH_NODE));
 
   newNode->type = type;
   newNode->params = NULL;
@@ -27,8 +27,8 @@ struct hashNode* hashInsert(int type, char* text) {
   return newNode;
 }
 
-struct hashNode* hashFind(char* text) {
-  struct hashNode *node;
+HASH_NODE* hashFind(char* text) {
+  HASH_NODE *node;
   int address = hashAddress(text);
   for (node = Table[address]; node; node = node->next) {
     if (strcmp(text, node->text) == 0)
@@ -39,7 +39,7 @@ struct hashNode* hashFind(char* text) {
 
 void hashPrint(void) {
   int i;
-  struct hashNode *node;
+  HASH_NODE *node;
   for (i = 0; i < HASH_SIZE; i++) {
     for (node = Table[i]; node; node = node->next) {
       fprintf(stderr, "Table[%d] has %s\n", i, node->text);
