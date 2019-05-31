@@ -203,6 +203,18 @@ void checkFunctionCall(AST* node) {
   }
 }
 
+void checkVectorAcess(AST* node) {
+  if (node->type != AST_VECTOR_ACCS) return;
+
+  int wrongType = getType(node->son[1]) != DATATYPE_INTEGER;
+
+  if (wrongType) {
+    fprintf(stderr, "[SEMANTIC ERROR] Vector acess with non natural number type\n");
+    semanticError++;
+    return;
+  }
+}
+
 void typeCheck(AST *node) {
   if (node == NULL) return;
 
@@ -217,6 +229,7 @@ void typeCheck(AST *node) {
   checkPowerExpression(node);
   checkAssignment(node);
   checkFunctionCall(node);
+  checkVectorAcess(node);
 }
 
 void setAndCheckDeclaration(AST *node) {
