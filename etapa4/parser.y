@@ -75,9 +75,12 @@ AST* root = NULL;
 
 %right KW_THEN KW_ELSE
 
-%left '<' '>' OPERATOR_LE OPERATOR_GE OPERATOR_EQ OPERATOR_DIF
 %left OPERATOR_OR
 %left OPERATOR_AND
+
+%left OPERATOR_EQ OPERATOR_DIF
+%left '<' '>' OPERATOR_LE OPERATOR_GE
+
 %left '+' '-'
 %left '*' '/' '%'
 %left '^'
