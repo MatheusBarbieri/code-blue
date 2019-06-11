@@ -1,0 +1,4 @@
+byte a = O ;
+byte main ( ) {
+ a = O  + O  ;
+};
