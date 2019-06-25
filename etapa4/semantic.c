@@ -71,7 +71,7 @@ int getType(AST* node) {
 
   if (node->type == AST_IDENTIFIER) {
     if (node->symbol->type == SYMBOL_VECTOR) {
-      fprintf(stderr, "[SEMANTIC ERROR] Vector variable without index\n");
+      fprintf(stderr, "[SEMANTIC ERROR] Vector variable without index. Line: %d\n", node->lineNum);
       semanticError++;
     }
     return node->symbol->datatype;
@@ -101,7 +101,7 @@ void checkArithmeticExpression(AST* node) {
     rightHandSideType == 0;
 
   if (wrongType) {
-    fprintf(stderr, "[SEMANTIC ERROR] Arithmetic expression should not have booleans\n");
+    fprintf(stderr, "[SEMANTIC ERROR] Arithmetic expression should not have booleans. Line: %d\n", node->lineNum);
     semanticError++;
     return;
   }
@@ -130,7 +130,7 @@ void checkLogicalExpression(AST* node) {
     node->type != AST_EXP_NOT);
 
   if (wrongType) {
-    fprintf(stderr, "[SEMANTIC ERROR] Logical expression with wrong types\n");
+    fprintf(stderr, "[SEMANTIC ERROR] Logical expression with wrong types. Line: %d\n", node->lineNum);
     semanticError++;
     return;
   }
@@ -149,7 +149,7 @@ void checkPowerExpression(AST* node) {
     rightHandSideType != DATATYPE_INTEGER;
 
   if (wrongType) {
-    fprintf(stderr, "[SEMANTIC ERROR] Power expression with wrong types, should be int or byte\n");
+    fprintf(stderr, "[SEMANTIC ERROR] Power expression with wrong types, should be int or byte. Line: %d\n", node->lineNum);
     semanticError++;
     return;
   }
@@ -170,7 +170,7 @@ void checkRelationalExpression(AST* node) {
     rightHandSideType == 0;
 
   if (wrongType) {
-    fprintf(stderr, "[SEMANTIC ERROR] Relational expression with wrong types\n");
+    fprintf(stderr, "[SEMANTIC ERROR] Relational expression with wrong types. Line: %d\n", node->lineNum);
     semanticError++;
     return;
   }
@@ -187,7 +187,7 @@ void checkAssignment(AST* node) {
   int wrongType = leftHandSideType != rightHandSideType;
 
   if (wrongType) {
-    fprintf(stderr, "[SEMANTIC ERROR] Assigning wrong type\n");
+    fprintf(stderr, "[SEMANTIC ERROR] Assigning wrong type. Line: %d\n", node->lineNum);
     semanticError++;
     return;
   }
@@ -207,7 +207,7 @@ void checkFunctionCall(AST* node) {
   int wrongType = args || params;
 
   if (wrongType) {
-    fprintf(stderr, "[SEMANTIC ERROR] Function call with wrong argument\n");
+    fprintf(stderr, "[SEMANTIC ERROR] Function call with wrong argument. Line: %d\n", node->lineNum);
     semanticError++;
     return;
   }
@@ -219,7 +219,7 @@ void checkVectorAcess(AST* node) {
   int wrongType = getType(node->son[1]) != DATATYPE_INTEGER;
 
   if (wrongType) {
-    fprintf(stderr, "[SEMANTIC ERROR] Vector acess with non natural number type\n");
+    fprintf(stderr, "[SEMANTIC ERROR] Vector acess with non natural number type. Line: %d\n", node->lineNum);
     semanticError++;
     return;
   }
@@ -236,7 +236,7 @@ void checkReturns(AST* node) {
   int wrongType = getType(node->son[0]) != currentFunctionType;
 
   if (wrongType) {
-    fprintf(stderr, "[SEMANTIC ERROR] Return type mismatch function type.\n");
+    fprintf(stderr, "[SEMANTIC ERROR] Return type mismatch function type. Line: %d\n", node->lineNum);
     semanticError++;
     return;
   }
@@ -244,7 +244,7 @@ void checkReturns(AST* node) {
 
 void checkUndeclared(AST *node) {
   if (node->type == AST_IDENTIFIER && node->symbol->datatype == 0) {
-    fprintf(stderr, "[SEMANTIC ERROR] Identifier %s is undeclared\n", node->symbol->text);
+    fprintf(stderr, "[SEMANTIC ERROR] Identifier %s is undeclared. Line: %d\n", node->symbol->text, node->lineNum);
     semanticError++;
   }
 }
@@ -283,7 +283,7 @@ void setAndCheckDeclaration(AST *node) {
   }
 
   if (symbol->type != SYMBOL_TK_IDENTIFIER) {
-    fprintf(stderr, "[SEMANTIC ERROR] Identifier %s redeclared\n", symbol->text);
+    fprintf(stderr, "[SEMANTIC ERROR] Identifier %s redeclared. Line: %d\n", symbol->text, node->lineNum);
     semanticError++;
   } else {
     switch (declaration->type) {
@@ -295,7 +295,7 @@ void setAndCheckDeclaration(AST *node) {
         symbol->type = SYMBOL_VECTOR;
 
         if (declaration->son[2]->type != AST_LIT_INT) {
-          fprintf(stderr, "[SEMANTIC ERROR] Vector %s indexed with wrong type.\n", symbol->text);
+          fprintf(stderr, "[SEMANTIC ERROR] Vector %s indexed with wrong type. Line: %d\n", symbol->text, node->lineNum);
           semanticError++;
         }
 
@@ -313,7 +313,7 @@ void setAndCheckDeclaration(AST *node) {
             if (wrongType) { typeError++; }
           }
           if (typeError) {
-            fprintf(stderr, "[SEMANTIC ERROR] Vector %s initialized with wrong type.\n", symbol->text);
+            fprintf(stderr, "[SEMANTIC ERROR] Vector %s initialized with wrong type. Line: %d\n", symbol->text, node->lineNum);
             semanticError++;
           }
         }

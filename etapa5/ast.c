@@ -1,11 +1,12 @@
 #include <stdlib.h>
 #include "ast.h"
 
-AST* astCreate(int type, HASH_NODE *symbol, AST *node0, AST *node1, AST *node2, AST *node3){
+AST* astCreate(int type, HASH_NODE *symbol, AST *node0, AST *node1, AST *node2, AST *node3, int lineNum){
 	AST* newnode;
 	newnode = (AST*) calloc(1,sizeof(AST));
 	newnode->type = type;
 	newnode->symbol = symbol;
+	newnode->lineNum = lineNum;
 	newnode->son[NODE_ZERO] = node0;
 	newnode->son[NODE_ONE] = node1;
 	newnode->son[NODE_TWO] = node2;

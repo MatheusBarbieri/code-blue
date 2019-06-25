@@ -93,8 +93,8 @@ AST* root = NULL;
 entry: program { root = $1; semanticCheck($1); }
 	 ;
 
-program: declaration program { $$ = astCreate(AST_DECL, 0, $1, $2, 0, 0); }
-	   | declaration { $$ = astCreate(AST_DECL, 0, $1, 0, 0, 0); }
+program: declaration program { $$ = astCreate(AST_DECL, 0, $1, $2, 0, 0, getLineNumber()); }
+	   | declaration { $$ = astCreate(AST_DECL, 0, $1, 0, 0, 0, getLineNumber()); }
 	   ;
 
   //declarations
@@ -104,150 +104,150 @@ declaration: variable { $$ = $1; }
            ;
 
   //variable
-variable: primitive_type identifier '=' literal ';' { $$ = astCreate(AST_VARIABLE, 0, $1, $2, $4, 0); }
+variable: primitive_type identifier '=' literal ';' { $$ = astCreate(AST_VARIABLE, 0, $1, $2, $4, 0, getLineNumber()); }
 		;
 
   //vector
-vector: primitive_type identifier '[' vector_size ']' vector_initialization ';' { $$ = astCreate(AST_VECTOR, 0, $1, $2, $4, $6); }
+vector: primitive_type identifier '[' vector_size ']' vector_initialization ';' { $$ = astCreate(AST_VECTOR, 0, $1, $2, $4, $6, getLineNumber()); }
 	  ;
 
-vector_size: LIT_INTEGER { $$ = astCreate(AST_LIT_INT, $1, 0, 0, 0, 0); }
-					 | LIT_CHAR { $$ = astCreate(AST_LIT_CHAR, $1, 0, 0, 0, 0); }
+vector_size: LIT_INTEGER { $$ = astCreate(AST_LIT_INT, $1, 0, 0, 0, 0, getLineNumber()); }
+					 | LIT_CHAR { $$ = astCreate(AST_LIT_CHAR, $1, 0, 0, 0, 0, getLineNumber()); }
 					 | identifier
 					 ;
 
-vector_initialization: ':' literal_list { $$ = astCreate(AST_VECTOR_INIT, 0, $2, 0, 0, 0); }
+vector_initialization: ':' literal_list { $$ = astCreate(AST_VECTOR_INIT, 0, $2, 0, 0, 0, getLineNumber()); }
                      | { $$ = NULL; }
                      ;
 
-vector_access: identifier '[' expression ']' { $$ = astCreate(AST_VECTOR_ACCS, 0, $1, $3, 0, 0); }
+vector_access: identifier '[' expression ']' { $$ = astCreate(AST_VECTOR_ACCS, 0, $1, $3, 0, 0, getLineNumber()); }
 			 ;
 
   // Tipos Primitivos
-primitive_type: KW_BYTE  { $$ = astCreate(AST_BYTE, 0, 0, 0, 0, 0); }
-              | KW_INT 	 { $$ = astCreate(AST_INT, 0, 0, 0, 0, 0); }
-              | KW_FLOAT { $$ = astCreate(AST_FLOAT, 0, 0, 0, 0, 0); }
+primitive_type: KW_BYTE  { $$ = astCreate(AST_BYTE, 0, 0, 0, 0, 0, getLineNumber()); }
+              | KW_INT 	 { $$ = astCreate(AST_INT, 0, 0, 0, 0, 0, getLineNumber()); }
+              | KW_FLOAT { $$ = astCreate(AST_FLOAT, 0, 0, 0, 0, 0, getLineNumber()); }
               ;
 
   // Literals
-literal: LIT_INTEGER	{ $$ = astCreate(AST_LIT_INT, $1, 0, 0, 0, 0); }
-       | LIT_FLOAT		{ $$ = astCreate(AST_LIT_FLOAT, $1, 0, 0, 0, 0); }
-       | LIT_CHAR		{ $$ = astCreate(AST_LIT_CHAR, $1, 0, 0, 0, 0); }
+literal: LIT_INTEGER	{ $$ = astCreate(AST_LIT_INT, $1, 0, 0, 0, 0, getLineNumber()); }
+       | LIT_FLOAT		{ $$ = astCreate(AST_LIT_FLOAT, $1, 0, 0, 0, 0, getLineNumber()); }
+       | LIT_CHAR		{ $$ = astCreate(AST_LIT_CHAR, $1, 0, 0, 0, 0, getLineNumber()); }
        ;
 
-literal_list: literal literal_list { $$ = astCreate(AST_LIT_LIST, 0, $1, $2, 0, 0); }
-            | literal { $$ = astCreate(AST_LIT_LIST, 0, $1, 0, 0, 0); }
+literal_list: literal literal_list { $$ = astCreate(AST_LIT_LIST, 0, $1, $2, 0, 0, getLineNumber()); }
+            | literal { $$ = astCreate(AST_LIT_LIST, 0, $1, 0, 0, 0, getLineNumber()); }
             ;
 
  // function
-function: primitive_type identifier function_parameters command_block ';' { $$ = astCreate(AST_FUNC, 0, $1, $2, $3, $4); }
+function: primitive_type identifier function_parameters command_block ';' { $$ = astCreate(AST_FUNC, 0, $1, $2, $3, $4, getLineNumber()); }
         ;
 
-function_parameters: '(' param_list ')' { $$ = astCreate(AST_FUNC_PARAMS, 0, $2, 0, 0, 0); }
-                   | '(' ')' { $$ = astCreate(AST_FUNC_PARAMS, 0, 0, 0, 0, 0); }
+function_parameters: '(' param_list ')' { $$ = astCreate(AST_FUNC_PARAMS, 0, $2, 0, 0, 0, getLineNumber()); }
+                   | '(' ')' { $$ = astCreate(AST_FUNC_PARAMS, 0, 0, 0, 0, 0, getLineNumber()); }
                    ;
 
   // function_call
-function_call: identifier arguments { $$ = astCreate(AST_FUNC_CALL, 0, $1, $2, 0, 0); }
+function_call: identifier arguments { $$ = astCreate(AST_FUNC_CALL, 0, $1, $2, 0, 0, getLineNumber()); }
              ;
 
-arguments: '(' argument_list ')' { $$ = astCreate(AST_FUNC_ARGS, 0, $2, 0, 0, 0); }
-		 | '(' ')' { $$ = astCreate(AST_FUNC_ARGS, 0, 0, 0, 0, 0); }
+arguments: '(' argument_list ')' { $$ = astCreate(AST_FUNC_ARGS, 0, $2, 0, 0, 0, getLineNumber()); }
+		 | '(' ')' { $$ = astCreate(AST_FUNC_ARGS, 0, 0, 0, 0, 0, getLineNumber()); }
 		 ;
 
-argument_list: expression ',' argument_list { $$ = astCreate(AST_ARG_LIST, 0, $1, $3, 0, 0); }
-			 | expression { $$ = astCreate(AST_ARG_LIST, 0, $1, 0, 0, 0); }
+argument_list: expression ',' argument_list { $$ = astCreate(AST_ARG_LIST, 0, $1, $3, 0, 0, getLineNumber()); }
+			 | expression { $$ = astCreate(AST_ARG_LIST, 0, $1, 0, 0, 0, getLineNumber()); }
 			 ;
 
   // functions parameter list
-param_list: param ',' param_list { $$ = astCreate(AST_PARAM_LIST, 0, $1, $3, 0, 0); }
-          | param { $$ = astCreate(AST_PARAM_LIST, 0, $1, 0, 0, 0); }
+param_list: param ',' param_list { $$ = astCreate(AST_PARAM_LIST, 0, $1, $3, 0, 0, getLineNumber()); }
+          | param { $$ = astCreate(AST_PARAM_LIST, 0, $1, 0, 0, 0, getLineNumber()); }
           ;
 
-param: primitive_type identifier { $$ = astCreate(AST_PARAM, 0, $1, $2, 0, 0); }
+param: primitive_type identifier { $$ = astCreate(AST_PARAM, 0, $1, $2, 0, 0, getLineNumber()); }
 
  // command_block
-command_block: '{' command_list '}' { $$ = astCreate(AST_CMD_BLOCK, 0, $2, 0, 0, 0); }
+command_block: '{' command_list '}' { $$ = astCreate(AST_CMD_BLOCK, 0, $2, 0, 0, 0, getLineNumber()); }
              ;
 
-command_list: command ';' command_list { $$ = astCreate(AST_CMD_LIST, 0, $1, $3, 0, 0); }
-            | command { $$ = astCreate(AST_CMD_LIST, 0, $1, 0, 0, 0); }
+command_list: command ';' command_list { $$ = astCreate(AST_CMD_LIST, 0, $1, $3, 0, 0, getLineNumber()); }
+            | command { $$ = astCreate(AST_CMD_LIST, 0, $1, 0, 0, 0, getLineNumber()); }
             ;
 
   // command
-command: assignment { $$ = astCreate(AST_CMD, 0, $1, 0, 0, 0); }
-       | flow_control { $$ = astCreate(AST_CMD, 0, $1, 0, 0, 0); }
-       | input_statement { $$ = astCreate(AST_CMD, 0, $1, 0, 0, 0); }
-       | output_statement { $$ = astCreate(AST_CMD, 0, $1, 0, 0, 0); }
-       | return_statement { $$ = astCreate(AST_CMD, 0, $1, 0, 0, 0); }
-       | command_block { $$ = astCreate(AST_CMD, 0, $1, 0, 0, 0); }
-       | { $$ = astCreate(AST_CMD, 0, 0, 0, 0, 0); }
+command: assignment { $$ = astCreate(AST_CMD, 0, $1, 0, 0, 0, getLineNumber()); }
+       | flow_control { $$ = astCreate(AST_CMD, 0, $1, 0, 0, 0, getLineNumber()); }
+       | input_statement { $$ = astCreate(AST_CMD, 0, $1, 0, 0, 0, getLineNumber()); }
+       | output_statement { $$ = astCreate(AST_CMD, 0, $1, 0, 0, 0, getLineNumber()); }
+       | return_statement { $$ = astCreate(AST_CMD, 0, $1, 0, 0, 0, getLineNumber()); }
+       | command_block { $$ = astCreate(AST_CMD, 0, $1, 0, 0, 0, getLineNumber()); }
+       | { $$ = astCreate(AST_CMD, 0, 0, 0, 0, 0, getLineNumber()); }
        ;
 
   // assignment
-assignment: identifier '=' expression { $$ = astCreate(AST_ASSING, 0, $1, $3, 0, 0); }
-          | vector_access '=' expression { $$ = astCreate(AST_ASSING, 0, $1, $3, 0, 0); }
+assignment: identifier '=' expression { $$ = astCreate(AST_ASSING, 0, $1, $3, 0, 0, getLineNumber()); }
+          | vector_access '=' expression { $$ = astCreate(AST_ASSING, 0, $1, $3, 0, 0, getLineNumber()); }
           ;
 
   //flow control
 flow_control: if_statement { $$ = $1; }
             | loop_statement { $$ = $1; }
-            | KW_LEAP { $$ = astCreate(AST_LEAP, 0, 0, 0, 0, 0); }
+            | KW_LEAP { $$ = astCreate(AST_LEAP, 0, 0, 0, 0, 0, getLineNumber()); }
             ;
 
   // input statement
-input_statement: KW_READ identifier { $$ = astCreate(AST_INPUT, 0, $2, 0, 0, 0); }
+input_statement: KW_READ identifier { $$ = astCreate(AST_INPUT, 0, $2, 0, 0, 0, getLineNumber()); }
 			   ;
 
   // output statement
-output_statement: KW_PRINT printables { $$ = astCreate(AST_PRINT, 0, $2, 0, 0, 0); }
+output_statement: KW_PRINT printables { $$ = astCreate(AST_PRINT, 0, $2, 0, 0, 0, getLineNumber()); }
 				;
 
   // List of literals that includes string for *printing* porpouses
-printables: printable ',' printables { $$ = astCreate(AST_PRINT_LIST, 0, $1, $3, 0, 0); }
-          | printable { $$ = astCreate(AST_PRINT_LIST, 0, $1, 0, 0, 0); }
+printables: printable ',' printables { $$ = astCreate(AST_PRINT_LIST, 0, $1, $3, 0, 0, getLineNumber()); }
+          | printable { $$ = astCreate(AST_PRINT_LIST, 0, $1, 0, 0, 0, getLineNumber()); }
           ;
 
-printable: LIT_STRING { $$ = astCreate(AST_LIT_STRING, $1, 0, 0, 0, 0); }
-         | expression { $$ = astCreate(AST_PRINT_EXP, 0, $1, 0, 0, 0); }
+printable: LIT_STRING { $$ = astCreate(AST_LIT_STRING, $1, 0, 0, 0, 0, getLineNumber()); }
+         | expression { $$ = astCreate(AST_PRINT_EXP, 0, $1, 0, 0, 0, getLineNumber()); }
          ;
 
   // return statement
-return_statement: KW_RETURN expression { $$ = astCreate(AST_RETURN, 0, $2, 0, 0, 0); }
+return_statement: KW_RETURN expression { $$ = astCreate(AST_RETURN, 0, $2, 0, 0, 0, getLineNumber()); }
 				;
 
   // if statement
-if_statement: KW_IF '(' expression ')' KW_THEN command  { $$ = astCreate(AST_IF, 0, $3, $6, 0, 0); }
-            | KW_IF '(' expression ')' KW_THEN command KW_ELSE command { $$ = astCreate(AST_IF, 0, $3, $6, $8, 0); }
+if_statement: KW_IF '(' expression ')' KW_THEN command  { $$ = astCreate(AST_IF, 0, $3, $6, 0, 0, getLineNumber()); }
+            | KW_IF '(' expression ')' KW_THEN command KW_ELSE command { $$ = astCreate(AST_IF, 0, $3, $6, $8, 0, getLineNumber()); }
             ;
 
   // loop
-loop_statement: KW_LOOP '(' expression ')' command { $$ = astCreate(AST_LOOP, 0, $3, $5, 0, 0); } ;
+loop_statement: KW_LOOP '(' expression ')' command { $$ = astCreate(AST_LOOP, 0, $3, $5, 0, 0, getLineNumber()); } ;
 
   //expression
-expression: '(' expression ')' { $$ = astCreate(AST_EXP_PARENTHESIS, 0, $2, 0, 0, 0); }
+expression: '(' expression ')' { $$ = astCreate(AST_EXP_PARENTHESIS, 0, $2, 0, 0, 0, getLineNumber()); }
           | literal { $$ = $1; }
           | function_call { $$ = $1; }
 		  		| vector_access { $$ = $1; }
           | identifier { $$ = $1; }
-          | expression '+' expression { $$ = astCreate(AST_EXP_SUM, 0, $1, $3, 0, 0); }
-          | expression '-' expression { $$ = astCreate(AST_EXP_SUB, 0, $1, $3, 0, 0); }
-          | expression '*' expression { $$ = astCreate(AST_EXP_MUL, 0, $1, $3, 0, 0); }
-          | expression '/' expression { $$ = astCreate(AST_EXP_DIV, 0, $1, $3, 0, 0); }
-          | expression '%' expression { $$ = astCreate(AST_EXP_MOD, 0, $1, $3, 0, 0); }
-          | expression '^' expression { $$ = astCreate(AST_EXP_POW, 0, $1, $3, 0, 0); }
-          | expression '<' expression { $$ = astCreate(AST_EXP_LESS, 0, $1, $3, 0, 0); }
-          | expression '>' expression { $$ = astCreate(AST_EXP_GREATER, 0, $1, $3, 0, 0); }
-          | expression OPERATOR_LE expression { $$ = astCreate(AST_EXP_LE, 0, $1, $3, 0, 0); }
-          | expression OPERATOR_GE expression { $$ = astCreate(AST_EXP_GE, 0, $1, $3, 0, 0); }
-          | expression OPERATOR_EQ expression { $$ = astCreate(AST_EXP_EQ, 0, $1, $3, 0, 0); }
-          | expression OPERATOR_DIF expression { $$ = astCreate(AST_EXP_DIF, 0, $1, $3, 0, 0); }
-          | expression OPERATOR_AND expression { $$ = astCreate(AST_EXP_AND, 0, $1, $3, 0, 0); }
-          | expression OPERATOR_OR expression { $$ = astCreate(AST_EXP_OR, 0, $1, $3, 0, 0); }
-          | OPERATOR_NOT expression { $$ = astCreate(AST_EXP_NOT, 0, $2, 0, 0, 0); }
+          | expression '+' expression { $$ = astCreate(AST_EXP_SUM, 0, $1, $3, 0, 0, getLineNumber()); }
+          | expression '-' expression { $$ = astCreate(AST_EXP_SUB, 0, $1, $3, 0, 0, getLineNumber()); }
+          | expression '*' expression { $$ = astCreate(AST_EXP_MUL, 0, $1, $3, 0, 0, getLineNumber()); }
+          | expression '/' expression { $$ = astCreate(AST_EXP_DIV, 0, $1, $3, 0, 0, getLineNumber()); }
+          | expression '%' expression { $$ = astCreate(AST_EXP_MOD, 0, $1, $3, 0, 0, getLineNumber()); }
+          | expression '^' expression { $$ = astCreate(AST_EXP_POW, 0, $1, $3, 0, 0, getLineNumber()); }
+          | expression '<' expression { $$ = astCreate(AST_EXP_LESS, 0, $1, $3, 0, 0, getLineNumber()); }
+          | expression '>' expression { $$ = astCreate(AST_EXP_GREATER, 0, $1, $3, 0, 0, getLineNumber()); }
+          | expression OPERATOR_LE expression { $$ = astCreate(AST_EXP_LE, 0, $1, $3, 0, 0, getLineNumber()); }
+          | expression OPERATOR_GE expression { $$ = astCreate(AST_EXP_GE, 0, $1, $3, 0, 0, getLineNumber()); }
+          | expression OPERATOR_EQ expression { $$ = astCreate(AST_EXP_EQ, 0, $1, $3, 0, 0, getLineNumber()); }
+          | expression OPERATOR_DIF expression { $$ = astCreate(AST_EXP_DIF, 0, $1, $3, 0, 0, getLineNumber()); }
+          | expression OPERATOR_AND expression { $$ = astCreate(AST_EXP_AND, 0, $1, $3, 0, 0, getLineNumber()); }
+          | expression OPERATOR_OR expression { $$ = astCreate(AST_EXP_OR, 0, $1, $3, 0, 0, getLineNumber()); }
+          | OPERATOR_NOT expression { $$ = astCreate(AST_EXP_NOT, 0, $2, 0, 0, 0, getLineNumber()); }
           ;
 
-identifier: TK_IDENTIFIER { $$ = astCreate(AST_IDENTIFIER, $1, 0, 0, 0, 0); }
+identifier: TK_IDENTIFIER { $$ = astCreate(AST_IDENTIFIER, $1, 0, 0, 0, 0, getLineNumber()); }
 		  ;
 
 %%

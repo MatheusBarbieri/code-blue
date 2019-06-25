@@ -66,11 +66,12 @@
 typedef struct astNode{
     int type;
     int datatype;
+    int lineNum;
     HASH_NODE *symbol;
     struct astNode *son[MAX_NODES];
 } AST;
 
-AST* astCreate(int type, HASH_NODE *symbol, AST *node0, AST *node1, AST *node2, AST *node3);
+AST* astCreate(int type, HASH_NODE *symbol, AST *node0, AST *node1, AST *node2, AST *node3, int lineNum);
 void astToFile(AST* node, FILE *fileTree);
 void astPrint(int level, AST* node);
 

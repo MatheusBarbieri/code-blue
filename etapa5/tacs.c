@@ -24,6 +24,7 @@ TAC* tacCreate(int type, HASH_NODE* res, HASH_NODE* op1, HASH_NODE* op2)
 
     return newtac;
 }
+
 void tacPrintSingle(TAC* tac)
 {
     //fprintf(stderr, "ERRO - tacPrintSingle(TAC *tac);\n");
@@ -138,6 +139,7 @@ void tacPrintSingle(TAC* tac)
 
     fprintf(stderr, ")\n");
 }
+
 void tacPrintBackwards(TAC* tac)
 {
     if(!tac) return;
@@ -265,6 +267,7 @@ TAC* tacGenerate(AST* node)
 
     return 0;
 }
+
 TAC* tacJoin(TAC* l1, TAC* l2)
 {
     if (l1 != NULL) {

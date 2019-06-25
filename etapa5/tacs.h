@@ -14,7 +14,7 @@
 #define TAC_LT 			6
 #define TAC_GT 			7
 #define TAC_LE 			8
-#define TAC_GE 		    9
+#define TAC_GE 		   9
 #define TAC_EQ 			10
 #define TAC_OR 			11
 #define TAC_AND 		12
