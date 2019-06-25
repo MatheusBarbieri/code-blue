@@ -68,13 +68,22 @@ int isOperation(AST* node) {
 int getType(AST* node) {
   if (isOperation(node)) return node->datatype;
   if (isLiteral(node)) return literalType(node);
-  if (node->type == AST_IDENTIFIER) return node->symbol->datatype;
 
-  if (
-    node->type == AST_VECTOR_ACCS ||
-    node->type == AST_EXP_PARENTHESIS ||
-    node->type == AST_FUNC_CALL
-  ) return getType(node->son[0]);
+  if (node->type == AST_IDENTIFIER) {
+    if (node->symbol->type == SYMBOL_VECTOR) {
+      fprintf(stderr, "[SEMANTIC ERROR] Vector variable without index\n");
+      semanticError++;
+    }
+    return node->symbol->datatype;
+  }
+
+  if (node->type == AST_EXP_PARENTHESIS || node->type == AST_FUNC_CALL) {
+    return getType(node->son[0]);
+  }
+
+  if (node->type == AST_VECTOR_ACCS) {
+    return node->son[0]->symbol->datatype;
+  }
 
   return 0;
 }
@@ -233,6 +242,13 @@ void checkReturns(AST* node) {
   }
 }
 
+void checkUndeclared(AST *node) {
+  if (node->type == AST_IDENTIFIER && node->symbol->datatype == 0) {
+    fprintf(stderr, "[SEMANTIC ERROR] Identifier %s is undeclared\n", node->symbol->text);
+    semanticError++;
+  }
+}
+
 void typeCheck(AST *node) {
   if (node == NULL) return;
 
@@ -243,6 +259,7 @@ void typeCheck(AST *node) {
   typeCheck(node->son[2]);
   typeCheck(node->son[3]);
 
+  checkUndeclared(node);
   checkArithmeticExpression(node);
   checkRelationalExpression(node);
   checkLogicalExpression(node);
@@ -349,11 +366,6 @@ void setAndCheckDeclarations(AST *node) {
   setAndCheckDeclarations(node->son[1]);
   setAndCheckDeclarations(node->son[2]);
   setAndCheckDeclarations(node->son[3]);
-
-  if (node->type == AST_IDENTIFIER && node->symbol->datatype == 0) {
-    fprintf(stderr, "[SEMANTIC ERROR] Identifier %s is undeclared\n", node->symbol->text);
-    semanticError++;
-  }
 }
 
 int semanticCheck(AST *node) {
