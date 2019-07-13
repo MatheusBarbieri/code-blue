@@ -256,6 +256,10 @@ AST* getAST() {
     return root;
 }
 
+TAC* getTACs(){
+  return rewindTac(createTacs(root, 0));
+}
+
 void yyerror(const char *msg) {
     printf("Error on line %d: %s\n", getLineNumber(), msg);
     exit(3);

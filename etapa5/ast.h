@@ -63,6 +63,8 @@
 #define AST_EXP_NOT 49
 #define AST_IDENTIFIER 50
 
+#define AST_SYMBOL 51
+
 typedef struct astNode{
     int type;
     int datatype;

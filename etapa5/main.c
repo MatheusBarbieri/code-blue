@@ -9,6 +9,8 @@ extern FILE *yyin;
 void checkUndeclared();
 void setDeclaration(AST* node);
 AST* getAST(void);
+extern TAC * getTACs();
+
 
 int main (int argc, char **argv)
 {
@@ -36,7 +38,7 @@ int main (int argc, char **argv)
 
 		// checkUndeclared();
 		// setDeclaration(getAST());
-		tacPrintForward(tacReverse(tacGenerate(getAST())));
+		printAllTacs(getTACs());
 
 		fprintf(stderr, "\nNo semantic errors!\n");
 
