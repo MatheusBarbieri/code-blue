@@ -37,19 +37,20 @@ void tacPrintSingle(TAC* tac) {
     case TAC_NOT: fprintf(stderr, "TAC_NOT"); break;
     case TAC_BEGINFUN: fprintf(stderr, "TAC_BEGINFUN"); break;
     case TAC_ENDFUN: fprintf(stderr, "TAC_ENDFUN"); break;
+    case TAC_PARAM: fprintf(stderr, "TAC_PARAM"); break;
     case TAC_RETURN: fprintf(stderr, "TAC_RETURN"); break;
     case TAC_IFZ: fprintf(stderr, "TAC_IFZ"); break;
     case TAC_JUMP: fprintf(stderr, "TAC_JUMP"); break;
-    case TAC_ARG: fprintf(stderr, "TAC_ARG"); break;
+    case TAC_FUNCALL: fprintf(stderr, "TAC_FUNCALL"); break;
+    case TAC_ARG_PUSH: fprintf(stderr, "TAC_ARG_PUSH"); break;
+    case TAC_POP: fprintf(stderr, "TAC_POP"); break;
     case TAC_PRINT: fprintf(stderr, "TAC_PRINT"); break;
     case TAC_READ: fprintf(stderr, "TAC_READ"); break;
-    case TAC_ASS: fprintf(stderr, "TAC_ASS"); break;
+    case TAC_MOVE: fprintf(stderr, "TAC_MOVE"); break;
     case TAC_VEC: fprintf(stderr, "TAC_VEC"); break;
     case TAC_VEC_INIT: fprintf(stderr, "TAC_VEC_INIT"); break;
-    case TAC_VEC_ASS: fprintf(stderr, "TAC_VEC_ASS"); break;
+    case TAC_VEC_MOVE: fprintf(stderr, "TAC_VEC_MOVE"); break;
     case TAC_VEC_ACC: fprintf(stderr, "TAC_VEC_ACC"); break;
-    case TAC_FUNCALL: fprintf(stderr, "TAC_FUNCALL"); break;
-    case TAC_PARAM: fprintf(stderr, "TAC_PARAM"); break;
 
     default: fprintf(stderr, "TAC_UNKNOWN"); break;
   }
@@ -100,8 +101,6 @@ void tacPrintForward(TAC* tac) {
   tacPrintForward(tac->next);
 }
 
-////////////////////////////////////////////
-
 TAC* makeBinOp(int type, TAC* left, TAC* right) {
   HASH_NODE* leftRes = left ? left->res : NULL;
   HASH_NODE* rightRes = right ? right->res : NULL;
@@ -135,7 +134,7 @@ TAC* makeVar(TAC* left, TAC* right) {
   HASH_NODE* rightRes = right ? right->res : NULL;
   return tacJoin(
     tacJoin(left, right),
-    tacCreate(TAC_ASS, leftRes, rightRes, 0)
+    tacCreate(TAC_MOVE, leftRes, rightRes, 0)
   );
 }
 
@@ -152,7 +151,7 @@ TAC* makeVecAssignment(TAC* result0, TAC* result1, TAC* result2) {
   return
   tacJoin(
     tacJoin(result0, result1),
-    tacCreate(TAC_VEC_ASS, res0, res1, res2)
+    tacCreate(TAC_VEC_MOVE, res0, res1, res2)
   );
 }
 
@@ -196,7 +195,7 @@ TAC* makeRead(TAC* target) {
   HASH_NODE* tempVar = makeTemp();
   return tacJoin(
     tacCreate(TAC_READ, tempVar, 0, 0),
-    tacCreate(TAC_ASS, target->res, tempVar, 0)
+    tacCreate(TAC_MOVE, target->res, tempVar, 0)
   );
 }
 
@@ -207,6 +206,24 @@ TAC* makePrint(TAC* result0, TAC* result1) {
       tacJoin(
         result0,
         tacCreate(TAC_PRINT, res0, 0, 0)),
+        result1);
+}
+
+TAC* makeFunctionCall(TAC* result0, TAC* result1) {
+  return
+    tacJoin(
+      tacJoin(
+        result1,
+        tacCreate(TAC_FUNCALL, result0->res, 0, 0)),
+        tacCreate(TAC_POP, makeTemp(), 0, 0));
+}
+
+TAC* makeArgPush(TAC* result0, TAC* result1) {
+  return
+    tacJoin(
+      tacJoin(
+        result0,
+        tacCreate(TAC_ARG_PUSH, result0->res, 0, 0)),
         result1);
 }
 
@@ -256,9 +273,9 @@ TAC* tacGenerate(AST* node, HASH_NODE* loopLabel) {
     case AST_RETURN: return tacJoin(result[0], tacCreate(TAC_RETURN, result[0] ? result[0]->res : 0, 0, 0));
 
     //Function call
-    // case AST_FUNC_CALL: return;
-    // case AST_FUNC_ARGS: return;
-    // case AST_ARG_LIST: return;
+    case AST_FUNC_CALL: return makeFunctionCall(result[0], result[1]);
+    case AST_FUNC_ARGS: return result[0] ? result[0] : 0;
+    case AST_ARG_LIST: return makeArgPush(result[0], result[1]);
 
     //Var
     case AST_VARIABLE: return makeVar(result[1], result[2]);
