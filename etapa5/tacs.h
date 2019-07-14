@@ -37,8 +37,6 @@
 #define TAC_VEC_MOVE 30
 #define TAC_VEC_ACC 31
 
-
-
 typedef struct tac_struct{
     int type;
     HASH_NODE* res;
@@ -52,10 +50,7 @@ TAC* tacCreate(int type, HASH_NODE* res, HASH_NODE* op1, HASH_NODE* op2);
 void tacPrintSingle(TAC* tac);
 void tacPrintBackwards(TAC* tac);
 void tacPrintForward(TAC* tac);
-TAC* tacReverse(TAC* tac);
-
-// CODE GENERATION
-
+TAC* indexReverseOrder(TAC* tac);
 TAC* tacGenerate(AST* node, HASH_NODE* loopLabel);
 TAC* tacJoin(TAC* l1, TAC* l2);
 

@@ -85,7 +85,7 @@ TAC* tacJoin(TAC* l1, TAC* l2) {
   return l2;
 }
 
-TAC* tacReverse(TAC* tac) {
+TAC* indexReverseOrder(TAC* tac) {
   if(!tac) return 0;
 
   for(; tac->prev; tac = tac->prev)

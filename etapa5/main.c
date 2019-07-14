@@ -26,7 +26,7 @@ int main (int argc, char **argv)
 
 		fprintf(stderr, "\n=============================\n");
 		fprintf(stderr, "Three Adress Codes:\n");
-		tacPrintForward(tacReverse(tacGenerate(ast, NULL)));
+		tacPrintForward(indexReverseOrder(tacGenerate(ast, NULL)));
 
 		fprintf(stderr, "\n=============================\n");
 		fprintf(stderr, "Hash table after TACs: \n");
