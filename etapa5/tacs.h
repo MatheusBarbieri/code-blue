@@ -37,8 +37,11 @@
 #define TAC_READ 25
 #define TAC_ASS 26
 #define TAC_WHILE 27
+
 #define TAC_VEC 28
-#define TAC_VEC_ASS 29
+#define TAC_VEC_INIT 29
+#define TAC_VEC_ASS 30
+#define TAC_VEC_ACC 31
 
 
 

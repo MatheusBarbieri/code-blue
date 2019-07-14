@@ -46,7 +46,9 @@ void tacPrintSingle(TAC* tac) {
     case TAC_ASS: fprintf(stderr, "TAC_ASS"); break;
     case TAC_WHILE: fprintf(stderr, "TAC_WHILE"); break;
     case TAC_VEC: fprintf(stderr, "TAC_VEC"); break;
+    case TAC_VEC_INIT: fprintf(stderr, "TAC_VEC_INIT"); break;
     case TAC_VEC_ASS: fprintf(stderr, "TAC_VEC_ASS"); break;
+    case TAC_VEC_ACC: fprintf(stderr, "TAC_VEC_ACC"); break;
     case TAC_FUNCALL: fprintf(stderr, "TAC_FUNCALL"); break;
     case TAC_PARAM: fprintf(stderr, "TAC_PARAM"); break;
 
@@ -243,10 +245,15 @@ TAC* tacGenerate(AST* node, HASH_NODE* loopLabel) {
     //vec
     case AST_VECTOR: return makeVec(result[1], result[2], result[3]);
     case AST_VEC_ASSIGN: return makeVecAssignment(result[0], result[1], result[2]);
+    case AST_VECTOR_INIT: return result[0];
+    case AST_LIT_LIST: return tacJoin(tacCreate(TAC_VEC_INIT, 0, result[0]->res, 0), result[1]);
+    case AST_VECTOR_ACCS: return tacJoin(result[1], tacCreate(TAC_VEC_ACC, makeTemp(), result[0]->res, result[1]->res));
 
+    //loop
     case AST_LOOP: return makeLoop(result[0], result[1], loopLabel);
 		case AST_LEAP: return makeLeap(loopLabel);
 
+    // if then else
     case AST_IF: return makeIf(result[0], result[1], result[2]);
 
     default: return tacJoin(tacJoin(tacJoin(result[0], result[1]), result[2]), result[3]);
@@ -254,141 +261,3 @@ TAC* tacGenerate(AST* node, HASH_NODE* loopLabel) {
 
   return 0;
 }
-
-/////////
-//
-// TAC* makeFuncall(AST* node, TAC* result0, TAC* result1) {
-//   int count = 0;
-//   char countStr[2];
-//
-//   TAC* bufferTac = tacCreate(TAC_BUFFER, result0?result0->res:0, 0, 0);
-//   TAC* bufferTac->res = makeTemp();
-//
-//   TAC* funcallTac = tacCreate(TAC_FUNCALL, bufferTac?bufferTac->res:0, result0?result0->res:0, 0);
-//
-//   TAC* firstJoin = tacJoin(tacJoin(result0, funcallTac), result1);
-//
-//   while(node->son[1])
-//   {
-//     count++;
-//     sprintf(countStr, "%d", count);
-//     HASH_NODE* countNode = hashInsert(SYMBOL_VAR, countStr);
-//
-//     node = node->son[1];
-//
-//     TAC* resultParam = tacGenerate(node->son[0], NULL);
-//     paramTac = tacCreate(TAC_PARAM_LIST, resultParam?resultParam->res:0, result0?result0->res:0, countNode);
-//     tacJoin(paramTac, firstJoin);
-//   }
-//
-//   return firstJoin;
-// }
-//
-// TAC* makePrint(AST* node, TAC* result0, TAC* result1) {
-//   printf("aceitou print\n");
-//   AST * symbolNode = 0;
-//
-//   int count = 1;
-//   char countStr[2];
-//
-//   TAC* printTac = 0;
-//   TAC* secondTac = 0;
-//   TAC* expNode = 0;
-//
-//   node = node->son[0];
-//   symbolNode = node->son[0];
-//
-//   if(symbolNode->type == AST_EXP_SUM || symbolNode->type == AST_EXP_SUB
-//   || symbolNode->type == AST_EXP_MUL || symbolNode->type == AST_EXP_DIV)
-//   //TODO: INCLUIR???
-//   // || symbolNode->type == AST_LT || symbolNode->type == AST_GT
-//   // || symbolNode->type == AST_LE || symbolNode->type == AST_NOT
-//   // || symbolNode->type == AST_EQ || symbolNode->type == AST_OR
-//   // || symbolNode->type == AST_AND || symbolNode->type == AST_VEC)
-//       expNode = tacGenerate(symbolNode, NULL);
-//
-//   //fprintf(stderr, "param: %s; num %d \n", symbolNode->symbol->text, count);
-//
-//   sprintf(countStr, "%d", count);
-//   //TODO: AST_LIT_INT ou ESCALAR???
-//   //HASH_NODE* countNode = hashInsert(SYMBOL_SCALAR, countStr);
-//   HASH_NODE* countNode = hashInsert(AST_LIT_INT, countStr);
-//
-//   //TODO????
-//   //printTac = tacCreate(TAC_PRINT, (node->son[0]->type == AST_DECL || node->son[0]->type == AST_LIT_STRING)  ? node->son[0]->symbol : expNode->res, 0, countNode);
-//   printTac = tacCreate(TAC_PRINT, (node->son[0]->type == AST_DECL || node->son[0]->type == AST_LIT_STRING)  ? node->son[0]->symbol : expNode->res, 0, countNode);
-//
-//   if(symbolNode->type == AST_EXP_SUM || symbolNode->type == AST_EXP_SUB || symbolNode->type == AST_EXP_MUL || symbolNode->type == AST_EXP_DIV)// || symbolNode->type == AST_LT || symbolNode->type == AST_GT || symbolNode->type == AST_LE || symbolNode->type == AST_NOT || symbolNode->type == AST_EQ || symbolNode->type == AST_OR || symbolNode->type == AST_AND || symbolNode->type == AST_VEC)
-//   {
-//     expNode = tacJoin(result0, expNode);
-//     printTac = tacJoin(expNode, printTac);
-//   }
-//   else {
-//     printTac = tacJoin(result0, printTac);
-//   }
-//
-//
-//   while(node->son[1])
-//   {
-//       count++;
-//       sprintf(countStr, "%d", count);
-//
-//       // TODO: SCALAR???
-//       //HASH_NODE* countNode = hashInsert(SYMBOL_SCALAR, countStr);
-//       HASH_NODE* countNode = hashInsert(AST_LIT_INT, countStr);
-//
-//       node = node->son[1];
-//       symbolNode = node->son[0];
-//
-//       if(symbolNode->type == AST_VECTOR)
-//           symbolNode = symbolNode->son[0];
-//       else if(symbolNode->type == AST_EXP_SUM || symbolNode->type == AST_EXP_SUB || symbolNode->type == AST_EXP_MUL || symbolNode->type == AST_EXP_DIV) //|| symbolNode->type == AST_LT || symbolNode->type == AST_GT || symbolNode->type == AST_LE || symbolNode->type == AST_NOT || symbolNode->type == AST_EQ || symbolNode->type == AST_OR || symbolNode->type == AST_AND || symbolNode->type == AST_VEC)
-//           expNode = tacGenerate(symbolNode, NULL);
-//
-//       //TODO: AST_SYMBOL ?? AST_STRING??
-//       //secondTac = tacCreate(TAC_PRINT, (node->son[0]->type == AST_SYMBOL || node->son[0]->type == AST_STRING) ? node->son[0]->symbol : expNode->res, 0, countNode);
-//       secondTac = tacCreate(TAC_PRINT, (node->son[0]->type == AST_DECL || node->son[0]->type == AST_LIT_STRING) ? node->son[0]->symbol : expNode->res, 0, countNode);
-//       //fprintf(stderr, "param: %s; num %d \n", symbolNode->symbol->text, count);
-//
-//       if(symbolNode->type == AST_EXP_SUM || symbolNode->type == AST_EXP_SUB || symbolNode->type == AST_EXP_MUL || symbolNode->type == AST_EXP_DIV) {// || symbolNode->type == AST_LT || symbolNode->type == AST_GT || symbolNode->type == AST_LE || symbolNode->type == AST_NOT || symbolNode->type == AST_EQ || symbolNode->type == AST_OR || symbolNode->type == AST_AND || symbolNode->type == AST_VEC){
-//           expNode = tacJoin(expNode, secondTac);
-//           secondTac = tacJoin(expNode, printTac);
-//       }
-//       else
-//       {
-//           secondTac = tacJoin(secondTac, printTac);
-//       }
-//
-//   }
-//
-//   return tacJoin(secondTac, result1);
-// }
-//
-// TAC* makeFundec(AST* node, TAC* result0, TAC* result1, TAC* result2) {
-//   int count = 0;
-//   char countStr[2];
-//
-//   TAC* beginTac = tacCreate(TAC_BEGINFUN, result0 ? result0->res : 0, 0,  0);
-//   TAC* endTac = tacCreate(TAC_ENDFUN, result0 ? result0->res : 0, 0, 0);
-//
-//   TAC* firstJoin = tacJoin(tacJoin(tacJoin(
-//     beginTac,
-//     result1),
-//     result2 ),
-//     endTac);
-//
-//   while(node->son[1])
-//   {
-//     count++;
-//     node = node->son[1];
-//
-//     sprintf(countStr, "%d", count);
-//     HASH_NODE* countNode = hashInsert(SYMBOL_VAR, countStr);
-//
-//     TAC* resultParam = tacGenerate(node->son[0], NULL);
-//     TAC* paramTac = tacCreate(TAC_PARAM_LIST, resultParam ? resultParam->res : 0, result0 ? result0->res : 0, countNode);
-//     tacJoin(paramTac, firstJoin);
-//   }
-//
-//   return firstJoin;
-// }
