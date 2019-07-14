@@ -37,7 +37,7 @@ lex.yy.o:
 	@gcc -c lex.yy.c
 
 clean:
-	@rm -rf lex.yy.* parser.tab.* main.o hash.o ast.o semantic.o tacs.o parser.output etapa4 results.txt errors.txt output1.txt output2.txt
+	@rm -rf lex.yy.* parser.tab.* main.o hash.o ast.o semantic.o tacs.o parser.output etapa5 results.txt errors.txt output1.txt output2.txt
 
 test: clean all
 	@./etapa5 test2.txt
