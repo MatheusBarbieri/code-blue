@@ -14,7 +14,8 @@
 #define SYMBOL_VECTOR	105
 #define SYMBOL_FUNCTION 106
 
-#define DATATYPE_BYTE 107
+#define SYMBOL_LABEL 107
+
 #define DATATYPE_INTEGER 108
 #define DATATYPE_FLOAT 109
 #define DATATYPE_BOOL 110
@@ -38,5 +39,8 @@ int hashAddress(char *text);
 HASH_NODE* hashInsert(int type, char *text);
 HASH_NODE* hashFind(char *text);
 void hashPrint(void);
+
+HASH_NODE* makeTemp();
+HASH_NODE* makeLabel();
 
 #endif

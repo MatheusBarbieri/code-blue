@@ -1,0 +1,10 @@
+byte 1 = O;
+float f = IO.EE;
+
+float incn ( byte x, byte n ) {
+  return x / n
+};
+
+byte main () {
+  f = incn(1,I);
+};

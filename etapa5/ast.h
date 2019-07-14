@@ -23,24 +23,27 @@
 #define AST_LIT_FLOAT 11
 #define AST_LIT_CHAR 12
 #define AST_LIT_LIST 13
+
 #define AST_FUNC 14
 #define AST_FUNC_PARAMS 15
+#define AST_PARAM_LIST 19
+#define AST_PARAM 20
+#define AST_RETURN 31
+
 #define AST_FUNC_CALL 16
 #define AST_FUNC_ARGS 17
 #define AST_ARG_LIST 18
-#define AST_PARAM_LIST 19
-#define AST_PARAM 20
+
 #define AST_CMD_BLOCK 21
 #define AST_CMD_LIST 22
 #define AST_CMD 23
-#define AST_ASSING 24
+#define AST_ASSIGN 24
 #define AST_LEAP 25
 #define AST_INPUT 26
 #define AST_PRINT 27
 #define AST_PRINT_LIST 28
 #define AST_LIT_STRING 29
 #define AST_PRINT_EXP 30
-#define AST_RETURN 31
 
 #define AST_IF 32
 #define AST_LOOP 33
@@ -62,6 +65,7 @@
 #define AST_EXP_OR 48
 #define AST_EXP_NOT 49
 #define AST_IDENTIFIER 50
+#define AST_VEC_ASSIGN 51
 
 typedef struct astNode{
     int type;

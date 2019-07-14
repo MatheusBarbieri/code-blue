@@ -179,7 +179,7 @@ void checkRelationalExpression(AST* node) {
 }
 
 void checkAssignment(AST* node) {
-  if (node->type != AST_ASSING) return;
+  if (node->type != AST_ASSIGN || node->type != AST_VEC_ASSIGN) return;
 
   int leftHandSideType = getType(node->son[0]);
   int rightHandSideType = getType(node->son[1]);

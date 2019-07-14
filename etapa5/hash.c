@@ -51,14 +51,14 @@ HASH_NODE* makeTemp()
 {
     static int serial = 0;
     static char name[100];
-    sprintf(name, "tempVar%d", serial++);
-    return hashInsert(SYMBOL_LIT_INTEGER, name);
+    sprintf(name, "_tempVar%d", serial++);
+    return hashInsert(SYMBOL_VAR, name);
 }
 
 HASH_NODE* makeLabel()
 {
     static int serial = 0;
     static char name[100];
-    sprintf(name, "Label%d", serial++);
-    return hashInsert(SYMBOL_TK_IDENTIFIER, name);
+    sprintf(name, "_label%d", serial++);
+    return hashInsert(SYMBOL_LABEL, name);
 }

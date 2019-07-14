@@ -40,4 +40,7 @@ clean:
 	@rm -rf lex.yy.* parser.tab.* main.o hash.o ast.o semantic.o tacs.o parser.output etapa4 results.txt errors.txt output1.txt output2.txt
 
 test: clean all
+	@./etapa5 test2.txt
+
+testfull: clean all
 	@./etapa5 test.txt

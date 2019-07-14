@@ -147,24 +147,23 @@ function_parameters: '(' param_list ')' { $$ = astCreate(AST_FUNC_PARAMS, 0, $2,
                    | '(' ')' { $$ = astCreate(AST_FUNC_PARAMS, 0, 0, 0, 0, 0, getLineNumber()); }
                    ;
 
-  // function_call
-function_call: identifier arguments { $$ = astCreate(AST_FUNC_CALL, 0, $1, $2, 0, 0, getLineNumber()); }
-             ;
-
-arguments: '(' argument_list ')' { $$ = astCreate(AST_FUNC_ARGS, 0, $2, 0, 0, 0, getLineNumber()); }
-		 | '(' ')' { $$ = astCreate(AST_FUNC_ARGS, 0, 0, 0, 0, 0, getLineNumber()); }
-		 ;
-
-argument_list: expression ',' argument_list { $$ = astCreate(AST_ARG_LIST, 0, $1, $3, 0, 0, getLineNumber()); }
-			 | expression { $$ = astCreate(AST_ARG_LIST, 0, $1, 0, 0, 0, getLineNumber()); }
-			 ;
-
-  // functions parameter list
 param_list: param ',' param_list { $$ = astCreate(AST_PARAM_LIST, 0, $1, $3, 0, 0, getLineNumber()); }
           | param { $$ = astCreate(AST_PARAM_LIST, 0, $1, 0, 0, 0, getLineNumber()); }
           ;
 
 param: primitive_type identifier { $$ = astCreate(AST_PARAM, 0, $1, $2, 0, 0, getLineNumber()); }
+
+// function_call
+function_call: identifier arguments { $$ = astCreate(AST_FUNC_CALL, 0, $1, $2, 0, 0, getLineNumber()); }
+						 ;
+
+arguments: '(' argument_list ')' { $$ = astCreate(AST_FUNC_ARGS, 0, $2, 0, 0, 0, getLineNumber()); }
+				 | '(' ')' { $$ = astCreate(AST_FUNC_ARGS, 0, 0, 0, 0, 0, getLineNumber()); }
+				 ;
+
+argument_list: expression ',' argument_list { $$ = astCreate(AST_ARG_LIST, 0, $1, $3, 0, 0, getLineNumber()); }
+						 | expression { $$ = astCreate(AST_ARG_LIST, 0, $1, 0, 0, 0, getLineNumber()); }
+						 ;
 
  // command_block
 command_block: '{' command_list '}' { $$ = astCreate(AST_CMD_BLOCK, 0, $2, 0, 0, 0, getLineNumber()); }
@@ -185,8 +184,8 @@ command: assignment { $$ = astCreate(AST_CMD, 0, $1, 0, 0, 0, getLineNumber()); 
        ;
 
   // assignment
-assignment: identifier '=' expression { $$ = astCreate(AST_ASSING, 0, $1, $3, 0, 0, getLineNumber()); }
-          | vector_access '=' expression { $$ = astCreate(AST_ASSING, 0, $1, $3, 0, 0, getLineNumber()); }
+assignment: identifier '=' expression { $$ = astCreate(AST_ASSIGN, 0, $1, $3, 0, 0, getLineNumber()); }
+          | identifier '[' expression ']' '=' expression { $$ = astCreate(AST_VEC_ASSIGN, 0, $1, $3, $6, 0, getLineNumber()); }
           ;
 
   //flow control

@@ -46,7 +46,8 @@ void astPrint(int level, AST *node){
 		case AST_CMD_BLOCK: fprintf(stderr, "AST_CMD_BLOCK, "); break;
 		case AST_CMD_LIST: fprintf(stderr, "AST_CMD_LIST, "); break;
 		case AST_CMD: fprintf(stderr, "AST_CMD, "); break;
-		case AST_ASSING: fprintf(stderr, "AST_ASSING, "); break;
+		case AST_VEC_ASSIGN: fprintf(stderr, "AST_VEC_ASSIGN, "); break;
+		case AST_ASSIGN: fprintf(stderr, "AST_ASSIGN, "); break;
 		case AST_LEAP: fprintf(stderr, "AST_LEAP, "); break;
 		case AST_INPUT: fprintf(stderr, "AST_INPUT, "); break;
 		case AST_PRINT: fprintf(stderr, "AST_PRINT, "); break;
@@ -223,7 +224,8 @@ void astToFile(AST *node, FILE *f){
 			}
 			break;
 		}
-		case AST_ASSING: {
+		case AST_VEC_ASSIGN:
+		case AST_ASSIGN: {
 			astToFile(node->son[NODE_ZERO], f);
 			fprintf(f, " = ");
 			astToFile(node->son[NODE_ONE], f);
