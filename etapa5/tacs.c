@@ -44,7 +44,6 @@ void tacPrintSingle(TAC* tac) {
     case TAC_PRINT: fprintf(stderr, "TAC_PRINT"); break;
     case TAC_READ: fprintf(stderr, "TAC_READ"); break;
     case TAC_ASS: fprintf(stderr, "TAC_ASS"); break;
-    case TAC_WHILE: fprintf(stderr, "TAC_WHILE"); break;
     case TAC_VEC: fprintf(stderr, "TAC_VEC"); break;
     case TAC_VEC_INIT: fprintf(stderr, "TAC_VEC_INIT"); break;
     case TAC_VEC_ASS: fprintf(stderr, "TAC_VEC_ASS"); break;
@@ -193,6 +192,24 @@ TAC* makeFunction(TAC* symbol, TAC* params, TAC* code) {
     tacCreate(TAC_ENDFUN, symbol->res, 0, 0));
 }
 
+TAC* makeRead(TAC* target) {
+  HASH_NODE* tempVar = makeTemp();
+  return tacJoin(
+    tacCreate(TAC_READ, tempVar, 0, 0),
+    tacCreate(TAC_ASS, target->res, tempVar, 0)
+  );
+}
+
+TAC* makePrint(TAC* result0, TAC* result1) {
+  HASH_NODE* res0 = result0 ? result0->res : 0;
+  return
+    tacJoin(
+      tacJoin(
+        result0,
+        tacCreate(TAC_PRINT, res0, 0, 0)),
+        result1);
+}
+
 TAC* tacGenerate(AST* node, HASH_NODE* loopLabel) {
   TAC* result[MAX_NODES];
 
@@ -238,6 +255,11 @@ TAC* tacGenerate(AST* node, HASH_NODE* loopLabel) {
     case AST_PARAM: return result[1];
     case AST_RETURN: return tacJoin(result[0], tacCreate(TAC_RETURN, result[0] ? result[0]->res : 0, 0, 0));
 
+    //Function call
+    // case AST_FUNC_CALL: return;
+    // case AST_FUNC_ARGS: return;
+    // case AST_ARG_LIST: return;
+
     //Var
     case AST_VARIABLE: return makeVar(result[1], result[2]);
     case AST_ASSIGN: return makeVar(result[0], result[1]);
@@ -253,8 +275,16 @@ TAC* tacGenerate(AST* node, HASH_NODE* loopLabel) {
     case AST_LOOP: return makeLoop(result[0], result[1], loopLabel);
 		case AST_LEAP: return makeLeap(loopLabel);
 
-    // if then else
+    //if then else
     case AST_IF: return makeIf(result[0], result[1], result[2]);
+
+    //read
+    case AST_INPUT: return makeRead(result[0]);
+
+    //print
+    case AST_PRINT: return result[0];
+    case AST_PRINT_LIST: return makePrint(result[0], result[1]);
+    case AST_PRINT_EXP: return result[0];
 
     default: return tacJoin(tacJoin(tacJoin(result[0], result[1]), result[2]), result[3]);
   }

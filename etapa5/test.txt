@@ -16,6 +16,7 @@ byte main () {
   a = C;
   v[a] = AO;
   print v[a];
+  read a;
 
   print "Digite um numero: \n";
   read a;
